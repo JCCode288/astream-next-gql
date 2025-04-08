@@ -59,6 +59,8 @@ const resolvers = {
          console.log(watch, "[Watch Data]");
          return watch;
       },
+   },
+   Mutation: {
       search: async (
          _: unknown,
          { query, page }: { query: string; page: number },

@@ -12,6 +12,9 @@ const typeDefs = gql`
          movie_page: Int
          popular_page: Int
       ): ZoroResult
+   }
+
+   type Mutation {
       search(query: String!, page: Int): AnimeResult
    }
 
