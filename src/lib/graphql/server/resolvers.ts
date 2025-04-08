@@ -47,14 +47,29 @@ const resolvers = {
 
          return aniProvider.getDetail(id);
       },
-      watch: (
+      watch: async (
          _: unknown,
          { id }: { id: string },
          { provider }: { provider: string }
       ) => {
+         console.log(id, "[Watch ID]");
          const aniProvider = getProvider(provider);
 
-         return aniProvider.watch(id);
+         const watch = await aniProvider.watch(id);
+         console.log(watch, "[Watch Data]");
+         return watch;
+      },
+      search: async (
+         _: unknown,
+         { query, page }: { query: string; page: number },
+         { provider }: { provider: string }
+      ) => {
+         console.log({ query, page }, "[Search Query]");
+         const aniProvider = getProvider(provider);
+
+         const search = await aniProvider.search(query, page);
+         console.log(search, "[Search Data]");
+         return search;
       },
    },
 };

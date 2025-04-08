@@ -2,20 +2,26 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { IAnimeData, IAnimeStore } from "./interfaces/anime.interfaces";
-import { ProviderEnum } from "../anime-provider/provider.interfaces";
+import {
+   IZoroPagination,
+   ProviderEnum,
+} from "../anime-provider/provider.interfaces";
 
-const pagination = {
-   page: 1,
+const pagination: IZoroPagination = {
    recent_page: 1,
    top_page: 1,
    popular_page: 1,
    movie_page: 1,
+   search_page: 1,
 };
 
 const initialData: IAnimeData = {
    main: null,
    detail: null,
    provider: ProviderEnum.ZORO,
+   page: 1,
+   search: null,
+   query: null,
    ...pagination,
 };
 
@@ -29,6 +35,12 @@ const animeStore = create<IAnimeStore>()(
          },
          setDetail(detail) {
             set((state) => ({ ...state, detail }));
+         },
+         setSearch(search) {
+            set((state) => ({ ...state, search }));
+         },
+         setQuery(query) {
+            set((state) => ({ ...state, query }));
          },
          setPage(page) {
             set((state) => ({ ...state, page }));
@@ -45,8 +57,14 @@ const animeStore = create<IAnimeStore>()(
          setPopularPage(page) {
             set((state) => ({ ...state, popular_page: page }));
          },
+         setSearchPage(page) {
+            set((state) => ({ ...state, search_page: page }));
+         },
          resetPagination() {
             set((state) => ({ ...state, ...pagination }));
+         },
+         resetStore() {
+            set((state) => ({ ...state, ...initialData }));
          },
       }),
       {

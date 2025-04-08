@@ -12,6 +12,7 @@ const typeDefs = gql`
          movie_page: Int
          popular_page: Int
       ): ZoroResult
+      search(query: String!, page: Int): AnimeResult
    }
 
    type Anime {
@@ -94,9 +95,20 @@ const typeDefs = gql`
    }
 
    type Source {
+      headers: SourceHeader
       sources: [Video]!
+      subtitles: [Subtitle]!
       download: String
       embedURL: String
+   }
+
+   type SourceHeader {
+      Referer: String
+   }
+
+   type Subtitle {
+      url: String!
+      lang: String
    }
 
    type Video {
@@ -105,6 +117,7 @@ const typeDefs = gql`
       isM3U8: Boolean
       isDASH: Boolean
       size: Int
+      type: String
    }
 `;
 

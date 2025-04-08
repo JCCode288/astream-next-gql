@@ -12,7 +12,7 @@
     "@apollo/client": "^3.13.6",
     "@apollo/server": "^4.11.3",
     "@as-integrations/next": "^3.2.0",
-    "@consumet/extensions": "^1.8.1",
+    "@consumet/extensions": "https://github.com/consumet/consumet.ts",
     "graphql-tag": "^2.12.6",
     "next": "15.2.4",
     "react": "^19.0.0",

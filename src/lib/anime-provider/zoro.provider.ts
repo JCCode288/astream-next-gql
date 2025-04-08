@@ -3,6 +3,7 @@ import {
    IAnimeResult,
    ISearch,
    ISource,
+   StreamingServers,
 } from "@consumet/extensions";
 import {
    IZoroMain,
@@ -21,7 +22,6 @@ export default class ZoroProvider
    private readonly provider = new ANIME.Zoro();
 
    async getMainPage(page: number | IZoroPagination) {
-      console.log("[Fetch] Main Page");
       if (typeof page === "number")
          throw new Error("method not implemented");
 
@@ -55,7 +55,10 @@ export default class ZoroProvider
       return this.provider.fetchAnimeInfo(id);
    }
    watch(id: string) {
-      return this.provider.fetchEpisodeSources(id);
+      return this.provider.fetchEpisodeSources(
+         id,
+         StreamingServers.VidCloud
+      );
    }
    search(query: string, page = 1) {
       return this.provider.search(query, page);

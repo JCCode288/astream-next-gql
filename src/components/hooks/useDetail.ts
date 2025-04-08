@@ -1,8 +1,8 @@
 "use client";
 import { useQuery } from "@apollo/client";
-import { DETAIL_QUERY } from "./queries/animes.query";
 import animeStore from "@/lib/stores/animes.store";
 import { useEffect } from "react";
+import { DETAIL_QUERY } from "./queries/detail.query";
 
 export default function useDetailAnime(id: string) {
    const detail = animeStore().detail;

@@ -5,6 +5,7 @@ export interface IZoroPagination {
    top_page: number;
    movie_page: number;
    popular_page: number;
+   search_page: number;
 }
 
 export interface ProviderStrategy<T, K, V = ISearch<T>> {

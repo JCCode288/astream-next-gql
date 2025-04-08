@@ -1,6 +1,6 @@
 "use client";
 import { useQuery } from "@apollo/client";
-import { ANIMES_QUERY } from "./queries/animes.query";
+import { ANIMES_QUERY } from "./queries/main.query";
 import animeStore from "@/lib/stores/animes.store";
 import { ProviderEnum } from "@/lib/anime-provider/provider.interfaces";
 import { useEffect } from "react";
@@ -25,8 +25,6 @@ export default function useMainAnimes() {
               popular_page,
            };
 
-   console.log(pagination);
-
    const { loading, data, error } = useQuery(ANIMES_QUERY, {
       variables: { ...pagination },
       pollInterval: 10_000,
@@ -35,7 +33,6 @@ export default function useMainAnimes() {
    useEffect(() => {
       if (data?.main) setMain(data.main);
    }, [data]);
-   console.log("data fetched", animes?.top.results[0]);
 
    return { loading, animes, error };
 }
