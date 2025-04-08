@@ -3,10 +3,15 @@ import resolvers from "./resolvers";
 import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import { ProviderEnum } from "@/lib/anime-provider/provider.interfaces";
+import { InMemoryLRUCache } from "@apollo/utils.keyvaluecache";
 
 const server = new ApolloServer({
    typeDefs,
    resolvers,
+   cache: new InMemoryLRUCache({
+      maxSize: Math.pow(2, 2) * 100, // ~100 mb caching
+      ttl: 180, // 3 minutes
+   }),
 });
 
 export default startServerAndCreateNextHandler(server, {
