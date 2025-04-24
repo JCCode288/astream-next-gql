@@ -25,7 +25,7 @@ const authStore = create<IAuthStore>()(
       }),
       {
          name: "auth-data",
-         storage: createJSONStorage(() => localStorage),
+         storage: createJSONStorage(() => sessionStorage),
       }
    )
 );

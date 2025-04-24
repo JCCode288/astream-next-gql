@@ -4,6 +4,12 @@ import {
    IZoroPagination,
    ProviderEnum,
 } from "@/lib/anime-provider/provider.interfaces";
+import {
+   IContextBody,
+   IVariableID,
+   IVariableQuery,
+} from "./interfaces/context.interface";
+import { IAnimeResult, ISearch } from "@consumet/extensions";
 
 export type MainPagination = { page?: number } & IZoroPagination;
 
@@ -17,7 +23,7 @@ const resolvers = {
       main: async (
          _: unknown,
          pagination: MainPagination,
-         { provider }: { provider: string }
+         { provider }: IContextBody
       ) => {
          try {
             const aniProvider = getProvider(ProviderEnum.ZORO);
@@ -40,8 +46,8 @@ const resolvers = {
 
       detail: (
          _: unknown,
-         { id }: { id: string },
-         { provider }: { provider: string }
+         { id }: IVariableID,
+         { provider }: IContextBody
       ) => {
          const aniProvider = getProvider(provider);
 
@@ -49,8 +55,8 @@ const resolvers = {
       },
       watch: async (
          _: unknown,
-         { id }: { id: string },
-         { provider }: { provider: string }
+         { id }: IVariableID,
+         { provider }: IContextBody
       ) => {
          console.log(id, "[Watch ID]");
          const aniProvider = getProvider(provider);
@@ -63,10 +69,19 @@ const resolvers = {
    Mutation: {
       search: async (
          _: unknown,
-         { query, page }: { query: string; page: number },
-         { provider }: { provider: string }
+         { query, page }: IVariableQuery,
+         { provider }: IContextBody
       ) => {
          console.log({ query, page }, "[Search Query]");
+         if (!query)
+            return {
+               results: [],
+               totalPages: 1,
+               currentPage: 1,
+               hasNextPage: false,
+               totalResults: 0,
+            } as ISearch<IAnimeResult>;
+
          const aniProvider = getProvider(provider);
 
          const search = await aniProvider.search(query, page);
