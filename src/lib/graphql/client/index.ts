@@ -7,21 +7,23 @@ import {
 } from "@apollo/client/core";
 import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
-// import authStore from "@/lib/stores/auth.store";
+import authStore from "@/lib/stores/auth.store";
 import animeStore from "@/lib/stores/animes.store";
 
 function buildLink(uri: string) {
    const baseLink = createHttpLink({ uri });
-   const contextLink = setContext(async (_, { headers }) => {
-      // const token = authStore.getState().token;
+   const contextLink = setContext(async (_, context) => {
+      const token = authStore.getState().token;
       const provider = animeStore.getState().provider;
-      console.log("[Context GQL] Provider: ", provider);
+      const headers = context.headers;
+      console.log(context, "[Request Headers]");
 
       return {
          headers: {
             ...headers,
-            // authorization: token ? `Bearer ${token}` : null,
+            authorization: token ? `Bearer ${token}` : null,
             "x-ani-provider": provider,
+            origin: process.env.NEXT_PUBLIC_URL,
          },
       };
    });
@@ -48,7 +50,10 @@ function buildLink(uri: string) {
 
 const client = new ApolloClient({
    ssrMode: true,
-   cache: new InMemoryCache(),
+   cache: new InMemoryCache({
+      resultCaching: false,
+   }),
+   credentials: "same-site",
    link: buildLink("/api/graphql"),
 });
 
