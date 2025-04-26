@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const WATCH_QUERY = gql`
-   query WatchEpisode($id: ID!) {
+   query WatchEpisode($id: ID!, $animeId: ID!) {
       watch(id: $id) {
          headers {
             Referer
@@ -19,6 +19,17 @@ export const WATCH_QUERY = gql`
          subtitles {
             url
             lang
+         }
+      }
+      detail(id: $animeId) {
+         id
+         title
+         image
+         episodes {
+            id
+            title
+            number
+            image
          }
       }
    }

@@ -44,26 +44,36 @@ const resolvers = {
       },
       hello: () => "world",
 
-      detail: (
+      detail: async (
          _: unknown,
          { id }: IVariableID,
          { provider }: IContextBody
       ) => {
-         const aniProvider = getProvider(provider);
+         try {
+            const aniProvider = getProvider(provider);
 
-         return aniProvider.getDetail(id);
+            return await aniProvider.getDetail(id);
+         } catch (err) {
+            console.log(err);
+            throw err;
+         }
       },
       watch: async (
          _: unknown,
          { id }: IVariableID,
          { provider }: IContextBody
       ) => {
-         console.log(id, "[Watch ID]");
-         const aniProvider = getProvider(provider);
+         try {
+            console.log(id, "[Watch ID]");
+            const aniProvider = getProvider(provider);
 
-         const watch = await aniProvider.watch(id);
-         console.log(watch, "[Watch Data]");
-         return watch;
+            const watch = await aniProvider.watch(id);
+            console.log(watch, "[Watch Data]");
+            return watch;
+         } catch (err) {
+            console.log(err);
+            throw err;
+         }
       },
    },
    Mutation: {
