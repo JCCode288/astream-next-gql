@@ -2,5 +2,9 @@ import { PropsWithChildren } from "react";
 import GraphQLProvider from "./graphql-provider";
 
 export default function MainProvider({ children }: PropsWithChildren) {
-   return <GraphQLProvider>{children}</GraphQLProvider>;
+   return (
+      <GraphQLProvider>
+         <div className="flex flex-col flex-1">{children}</div>
+      </GraphQLProvider>
+   );
 }
