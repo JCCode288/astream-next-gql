@@ -4,6 +4,7 @@ import "./globals.css";
 import MainProvider from "@/components/providers/main-provider";
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
+import animeStore from "@/lib/stores/animes.store";
 
 const geistSans = Geist({
    variable: "--font-geist-sans",
@@ -32,6 +33,7 @@ export default function RootLayout({
          >
             <MainProvider>
                <Navbar />
+
                {children}
                <Footer />
             </MainProvider>

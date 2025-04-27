@@ -1,4 +1,4 @@
-import { ISearch } from "@consumet/extensions";
+import { IAnimeResult, ISearch } from "@consumet/extensions";
 
 export interface IZoroPagination {
    recent_page: number;
@@ -33,4 +33,5 @@ export interface IZoroMain<T> {
    top: T;
    movies: T;
    popular: T;
+   highlighted?: IAnimeResult;
 }
