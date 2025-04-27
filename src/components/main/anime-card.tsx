@@ -34,7 +34,7 @@ export default function AnimeCard({ anime }: { anime: IAnimeResult }) {
                </div>
             </div>
             <CardContent className="p-3">
-               <h3 className="font-medium line-clamp-1 group-hover:text-rose-500 transition-colors">
+               <h3 className="font-medium line-clamp-1 group-hover:text-rose-500 transition-colors text-gray-300">
                   {title.toString()}
                </h3>
                <div className="flex items-center justify-between mt-1 text-xs text-zinc-400">
