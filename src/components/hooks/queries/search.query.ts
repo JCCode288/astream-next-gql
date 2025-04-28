@@ -7,7 +7,6 @@ export const SEARCH_QUERY = gql`
          results {
             id
             title
-            japaneseTitle
             url
             image
             cover
