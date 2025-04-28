@@ -48,7 +48,7 @@ export default function Player() {
          artPlayer.destroy();
          artPlayer?.hls?.destroy();
       };
-   }, [streamDiv.current, currentSource, qualities, currentSubs]);
+   }, [currentSource, qualities, currentSubs]);
 
    return (
       <div

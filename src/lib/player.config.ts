@@ -1,7 +1,8 @@
+"use client";
+
 import type Option from "artplayer/types/option";
-import Hls, { HlsConfig } from "hls.js";
+import Hls from "hls.js";
 import { IGenerateOpts } from "./stores/interfaces/vid-player.interfaces";
-import { error } from "console";
 
 export default function playerConfig({
    currentSource,
