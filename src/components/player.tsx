@@ -53,7 +53,7 @@ export default function Player() {
    return (
       <div
          ref={streamDiv}
-         className="artplayer-app relative my-8 aspect-video max-h-full w-auto rounded-sm bg-primary-700 shadow-sm ring-2 ring-primary-200 dark:ring-offset-dark-tertiary-700 md:ring-offset-[1rem]"
+         className="artplayer-app relative my-8 aspect-video md:max-h-[60lvh] w-auto max-w-screen rounded-sm bg-primary-700 shadow-sm ring-2 ring-pink-800 ring-offset-pink-700 md:ring-offset-[0.5rem]"
       />
    );
 }
