@@ -2,31 +2,29 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import {
-   Play,
-   Star,
-   MessageSquare,
-   Share2,
-   Heart,
-   Plus,
-   ChevronLeft,
-   ChevronRight,
-} from "lucide-react";
+import { Play, Star, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import EpisodeCard from "@/components/details/episode-card";
-import CommentCard from "@/components/details/comment-card";
 import SimilarAnimeCard from "@/components/details/similar-card";
 import { useParams } from "next/navigation";
 import useDetailAnime from "@/components/hooks/useDetail";
 import Loading from "./loading";
+import { useMemo } from "react";
 
 export default function AnimeDetailPage() {
    // In a real app, you would fetch the anime data based on the ID
    const { id } = useParams();
 
    const { loading, error, detail } = useDetailAnime(id as string);
+
+   const firstEps = useMemo(() => {
+      if (!detail?.episodes?.length) return null;
+
+      const splitted = detail.episodes[0].id.split("$");
+      return splitted[splitted.length - 1];
+   }, [detail]);
 
    if (loading) return <Loading />;
 
@@ -58,11 +56,18 @@ export default function AnimeDetailPage() {
                      />
                   </div>
                   <div className="flex gap-2">
-                     <Button className="flex-1 gap-2 bg-rose-500 hover:bg-rose-600">
-                        <Play className="h-4 w-4" />
-                        Watch
-                     </Button>
-                     <Button
+                     {firstEps && (
+                        <Link
+                           href={`/anime/${id}/watch/${firstEps}`}
+                           className="flex-1 flex gap-2"
+                        >
+                           <Button className="bg-rose-500 hover:bg-rose-600 flex-1 cursor-pointer">
+                              <Play className="h-4 w-4" />
+                              Watch
+                           </Button>
+                        </Link>
+                     )}
+                     {/* <Button
                         variant="outline"
                         size="icon"
                         className="border-zinc-700 bg-zinc-900/50 text-white hover:bg-zinc-900 hover:text-rose-500 hover:border-rose-500"
@@ -75,14 +80,14 @@ export default function AnimeDetailPage() {
                         className="border-zinc-700 bg-zinc-900/50 text-white hover:bg-zinc-900 hover:text-white hover:border-zinc-500"
                      >
                         <Plus className="h-4 w-4" />
-                     </Button>
-                     <Button
+                     </Button> */}
+                     {/* <Button
                         variant="outline"
                         size="icon"
                         className="border-zinc-700 bg-zinc-900/50 text-white hover:bg-zinc-900 hover:text-white hover:border-zinc-500"
                      >
                         <Share2 className="h-4 w-4" />
-                     </Button>
+                     </Button> */}
                   </div>
                </div>
 
@@ -210,7 +215,6 @@ export default function AnimeDetailPage() {
                      Related
                   </TabsTrigger>
                </TabsList> */}
-
             {/* <TabsContent value="episodes" className="mt-6"> */}
             <div className="flex justify-between items-center mb-6">
                <div>
@@ -238,7 +242,6 @@ export default function AnimeDetailPage() {
                   </div>
                )}
             </div>
-
             <div className="grid gap-4">
                {detail?.episodes?.map((eps, i) => {
                   if (detail.episodes && i === detail.episodes.length - 1)
@@ -260,50 +263,6 @@ export default function AnimeDetailPage() {
                      />
                   );
                })}
-            </div>
-
-            <div className="mt-8 flex justify-center">
-               <div className="flex items-center gap-2">
-                  <Button
-                     variant="outline"
-                     size="icon"
-                     className="h-8 w-8 border-zinc-700 bg-zinc-900/50 text-white hover:bg-zinc-900 hover:text-white"
-                  >
-                     <ChevronLeft className="h-4 w-4" />
-                  </Button>
-                  <Button
-                     variant="outline"
-                     className="h-8 w-8 border-zinc-700 bg-zinc-900/50 text-white hover:bg-zinc-900 hover:text-white"
-                  >
-                     1
-                  </Button>
-                  <Button
-                     variant="outline"
-                     className="h-8 w-8 border-zinc-700 bg-zinc-900/50 text-white hover:bg-zinc-900 hover:text-white"
-                  >
-                     2
-                  </Button>
-                  <Button
-                     variant="outline"
-                     className="h-8 w-8 border-zinc-700 bg-zinc-900/50 text-white hover:bg-zinc-900 hover:text-white"
-                  >
-                     3
-                  </Button>
-                  <span className="text-zinc-400">...</span>
-                  <Button
-                     variant="outline"
-                     className="h-8 w-8 border-zinc-700 bg-zinc-900/50 text-white hover:bg-zinc-900 hover:text-white"
-                  >
-                     5
-                  </Button>
-                  <Button
-                     variant="outline"
-                     size="icon"
-                     className="h-8 w-8 border-zinc-700 bg-zinc-900/50 text-white hover:bg-zinc-900 hover:text-white"
-                  >
-                     <ChevronRight className="h-4 w-4" />
-                  </Button>
-               </div>
             </div>
             {/* </TabsContent> */}
             {/* 
@@ -486,7 +445,6 @@ export default function AnimeDetailPage() {
                   </div>
                </div>
             </TabsContent> */}
-
             {/* <TabsContent value="characters" className="mt-6">
                <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                   {Array.from({ length: 8 }).map((_, i) => (
@@ -516,7 +474,7 @@ export default function AnimeDetailPage() {
          </div>
 
          {/* Comments Section */}
-         <div className="container py-8 border-t border-zinc-800">
+         {/* <div className="container py-8 border-t border-zinc-800">
             <div className="flex items-center justify-between mb-6">
                <h2 className="text-xl font-bold">Comments</h2>
                <Button
@@ -542,26 +500,28 @@ export default function AnimeDetailPage() {
                   Load More Comments
                </Button>
             </div>
-         </div>
+         </div> */}
 
          {/* Similar Anime Section */}
-         <div className="container py-12 border-t border-zinc-800">
-            <div className="flex items-center justify-between mb-6">
-               <h2 className="text-xl font-bold">You May Also Like</h2>
-               <Button
-                  variant="link"
-                  className="text-rose-500 hover:text-rose-400 p-0"
-               >
-                  See All <ChevronRight className="h-4 w-4 ml-1" />
-               </Button>
-            </div>
+         {!!detail?.recommendations?.length && (
+            <div className="container py-12 border-t border-zinc-800">
+               <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold">You May Also Like</h2>
+                  <Button
+                     variant="link"
+                     className="text-rose-500 hover:text-rose-400 p-0"
+                  >
+                     See All <ChevronRight className="h-4 w-4 ml-1" />
+                  </Button>
+               </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-               {Array.from({ length: 6 }).map((_, i) => (
-                  <SimilarAnimeCard key={i} index={i} />
-               ))}
+               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                  {detail.recommendations.map((rec, i) => (
+                     <SimilarAnimeCard key={i} rec={rec} />
+                  ))}
+               </div>
             </div>
-         </div>
+         )}
 
          {/* Footer would go here - reusing from main page */}
       </div>
