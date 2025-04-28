@@ -1,7 +1,6 @@
 "use client";
 
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
 import {
    IPlayerData,
    IPlayerStore,
@@ -27,12 +26,8 @@ const videoStore = create<IPlayerStore>()((set, get) => ({
    setQualities(qualities) {
       set((state) => ({ ...state, qualities }));
    },
-   setCurrentSubs(lang) {
-      const sub = get().subs.find((sub) => sub.lang === lang);
-
-      if (!sub) return;
-
-      set((state) => ({ ...state, currentSubs: sub }));
+   setCurrentSubs(currentSubs) {
+      set((state) => ({ ...state, currentSubs }));
    },
    setSubs(subs) {
       set((state) => ({ ...state, subs }));

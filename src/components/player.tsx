@@ -9,18 +9,21 @@ export default function Player() {
    const streamDiv = useRef<HTMLDivElement>(null);
    const currentSource = videoStore().currentSource;
    const qualities = videoStore().qualities;
-   const currentSubs = videoStore().currentSubs?.url;
+   const currentSubs = videoStore().currentSubs;
    const referer = videoStore().headers?.Referer;
+
+   console.log({ currentSource, qualities, currentSubs, referer });
 
    useEffect(() => {
       if (!streamDiv.current) return;
       if (!currentSource) return;
+      if (!currentSubs?.url) return;
 
       const config = playerConfig({
          currentSource,
          referer,
          qualities,
-         currentSubs,
+         currentSubs: currentSubs.url,
          div: streamDiv.current,
       });
 

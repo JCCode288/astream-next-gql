@@ -26,6 +26,6 @@ export interface IPlayerStore extends IPlayerData {
    setHeaders(headers: Record<string, any>): void;
    setCurrentSource(source: IVideo): void;
    setQualities(qualities: IVideoQuality[]): void;
-   setCurrentSubs(lang: string): void;
+   setCurrentSubs(lang: ISubtitle): void;
    setSubs(subs: ISubtitle[]): void;
 }

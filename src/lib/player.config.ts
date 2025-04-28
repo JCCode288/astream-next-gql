@@ -102,16 +102,14 @@ export default function playerConfig({
       quality: qualities,
    } as Option;
 
-   if (currentSubs) {
-      opts.subtitle = {
-         url: currentSubs,
-         type: "vtt",
-         style: {
-            color: "#fff",
-         },
-         encoding: "utf-8",
-      };
-   }
+   opts.subtitle = {
+      url: currentSubs,
+      type: "vtt",
+      style: {
+         color: "#fff",
+      },
+      encoding: "utf-8",
+   };
 
    return opts;
 }

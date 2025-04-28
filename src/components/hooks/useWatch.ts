@@ -38,7 +38,7 @@ export default function useWatchAnime(animeId: string, episodeId: string) {
       );
       setCurrentSubs(currentSubs);
 
-      console.log({ sources, subs, qualities, currentSubs });
+      // console.log({ sources, subs, qualities, currentSubs });
    }, [data]);
 
    return { loading, watch, anime: data?.detail, error };
