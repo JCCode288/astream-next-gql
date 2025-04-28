@@ -12,6 +12,7 @@ import { useParams } from "next/navigation";
 import useDetailAnime from "@/components/hooks/useDetail";
 import Loading from "./loading";
 import { useMemo } from "react";
+import BackHomeButton from "@/components/back-home-button";
 
 export default function AnimeDetailPage() {
    // In a real app, you would fetch the anime data based on the ID
@@ -33,16 +34,9 @@ export default function AnimeDetailPage() {
          {/* Hero Section with Anime Cover */}
          <div className="relative">
             {/* Back Button */}
-            <div className="container relative z-10 pt-8">
-               <Link
-                  href="/"
-                  className="inline-flex items-center text-sm text-zinc-400 hover:text-white transition-colors"
-               >
-                  <ChevronLeft className="mr-1 h-4 w-4" />
-                  Back to Home
-               </Link>
-            </div>
+            <BackHomeButton />
 
+            {/* Hero Container */}
             <div className="container relative z-10 grid grid-cols-1 md:grid-cols-[300px_1fr] gap-8 py-12">
                {/* Anime Poster */}
                <div className="flex flex-col gap-4">
@@ -94,6 +88,7 @@ export default function AnimeDetailPage() {
                {/* Anime Details */}
                <div className="flex flex-col justify-end">
                   <div className="space-y-2">
+                     {/* Badges */}
                      <div className="flex flex-wrap gap-2">
                         <Badge className="bg-rose-500 hover:bg-rose-600">
                            {detail?.type}
@@ -119,6 +114,7 @@ export default function AnimeDetailPage() {
                         {detail?.title as string}
                      </h1>
 
+                     {/* Anime Infos */}
                      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
                         <div className="flex items-center">
                            <Star className="h-4 w-4 fill-yellow-500 text-yellow-500 mr-1" />
@@ -135,6 +131,7 @@ export default function AnimeDetailPage() {
                         </div>
                      </div>
 
+                     {/* Genres */}
                      <div className="flex flex-wrap gap-2 pt-1">
                         {detail?.genres?.map((genre, idx) => (
                            <Link
@@ -148,10 +145,9 @@ export default function AnimeDetailPage() {
                      </div>
                   </div>
 
+                  {/* Descriptions */}
                   <div className="mt-6">
-                     <p className="text-zinc-300 max-w-3xl">
-                        {detail?.description}
-                     </p>
+                     <p className="text-zinc-300">{detail?.description}</p>
                   </div>
 
                   <div className="mt-6 flex flex-wrap gap-6 text-sm">
@@ -504,7 +500,7 @@ export default function AnimeDetailPage() {
 
          {/* Similar Anime Section */}
          {!!detail?.recommendations?.length && (
-            <div className="container py-12 border-t border-zinc-800">
+            <div className="container justify-center px-4 py-12 border-t border-zinc-800">
                <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-bold">You May Also Like</h2>
                   <Button
