@@ -8,20 +8,20 @@ export default function Loading() {
             <section className="py-12">
                <div className="container">
                   <div className="mb-12">
-                     <div className="flex items-center flex-col md:flex-row gap-2 justify-between mb-6">
+                     <div className="flex flex-col gap-1">
                         <Skeleton className="w-48 h-8 bg-zinc-700" />
-                        <Skeleton className="w-72 h-12 bg-zinc-800" />
+                        <div className="flex items-center justify-between mb-6">
+                           <Skeleton className="w-48 h-8 bg-zinc-700" />
+                        </div>
                      </div>
 
                      <div className="mt-0">
                         <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                            {Array.from({ length: 12 }, (_, i) => (
-                              <div
-                                 className="flex w-full h-full justify-center items-center"
+                              <Skeleton
                                  key={`sk-card-${i}`}
-                              >
-                                 <Skeleton className="aspect-[4/5] h-[35lvh] bg-zinc-800" />
-                              </div>
+                                 className="aspect-[4/5] h-[35lvh] bg-zinc-800"
+                              />
                            ))}
                         </div>
                      </div>

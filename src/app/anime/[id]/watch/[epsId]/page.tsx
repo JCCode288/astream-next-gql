@@ -31,8 +31,6 @@ export default function WatchPage() {
       anime,
    } = useWatchAnime(animeId as string, id);
 
-   if (error) return <>Error {JSON.stringify(error)}</>;
-
    if (loading) return <Loading />;
 
    return (

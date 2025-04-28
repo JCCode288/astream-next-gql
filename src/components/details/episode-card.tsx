@@ -82,7 +82,7 @@ export default function EpisodeCard({
                         <span>{episode.releaseDate}</span>
                      </div>
 
-                     <div className="flex gap-2">
+                     {/* <div className="flex gap-2">
                         <Button
                            variant="ghost"
                            size="sm"
@@ -99,7 +99,7 @@ export default function EpisodeCard({
                            <Plus className="h-4 w-4" />
                            <span className="sr-only">Add to List</span>
                         </Button>
-                     </div>
+                     </div> */}
                   </div>
                </div>
             </div>
