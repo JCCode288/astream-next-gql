@@ -1,3 +1,4 @@
+import { createWriteStream } from "fs";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -5,6 +6,7 @@ export async function GET(
    { params }: { params: Promise<{ url: string[] }> }
 ) {
    try {
+      console.log("proxy triggered");
       const query = req.nextUrl.searchParams;
       const { url } = await params;
 
@@ -23,15 +25,10 @@ export async function GET(
          headers,
       });
 
-      const data = await res.arrayBuffer();
-
-      return new NextResponse(data, {
+      return new NextResponse(res.body, {
          headers: {
             ...res.headers,
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type, Authorization",
-            "Cache-Control": "no-cache, no-store, must-revalidate",
+            Connection: "keep-alive",
          },
       });
    } catch (err) {
