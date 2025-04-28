@@ -1,6 +1,6 @@
 import { ChevronRight } from "lucide-react";
-import { Button } from "./ui/button";
-import UpcomingCard from "./main/upcoming-card";
+import { Button } from "../ui/button";
+import UpcomingCard from "./upcoming-card";
 
 export interface IUpcomingProps {
    upcomings: Record<string, any>[]; //placeholder

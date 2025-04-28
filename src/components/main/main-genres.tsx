@@ -1,6 +1,6 @@
 import { ChevronRight } from "lucide-react";
-import { Button } from "./ui/button";
-import GenreCard from "./main/main-card";
+import { Button } from "../ui/button";
+import GenreCard from "./main-card";
 
 export interface IGenreProps {
    genres: string[];
