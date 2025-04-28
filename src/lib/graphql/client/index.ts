@@ -16,7 +16,7 @@ function buildLink(uri: string) {
       const token = authStore.getState().token;
       const provider = animeStore.getState().provider;
       const headers = context.headers;
-      console.log(context, "[Request Headers]");
+      // console.log(context, "[Request Headers]");
 
       return {
          headers: {
