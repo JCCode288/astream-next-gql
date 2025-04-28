@@ -17,9 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-   title: "Anime Streaming Online (Astreamline) | Main",
-   description:
-      "Anime Streaming Online Main Page where you can navigate to see any animes",
+   title: "Anime Streaming (Astreamline) | Main",
+   description: "Anime Streaming Online, watch and stream anime free.",
 };
 
 export default function RootLayout({

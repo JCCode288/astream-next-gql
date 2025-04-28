@@ -69,7 +69,7 @@ export default function HomePage() {
                      onValueChange={setTabVal}
                      className="mb-12"
                   >
-                     <div className="flex items-center justify-between mb-6">
+                     <div className="flex items-center justify-between mb-6 gap-2 flex-col md:flex-row">
                         <h2 className="text-2xl font-bold">
                            {sectionName}
                         </h2>
@@ -102,7 +102,7 @@ export default function HomePage() {
                      </div>
 
                      <TabsContent value="recent" className="mt-0">
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                            {recent.results.map((anime, i) => (
                               <AnimeCard key={i} anime={anime} />
                            ))}
@@ -110,7 +110,7 @@ export default function HomePage() {
                      </TabsContent>
 
                      <TabsContent value="trending" className="mt-0">
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                            {top.results.map((anime, i) => (
                               <AnimeCard key={i} anime={anime} />
                            ))}
@@ -118,7 +118,7 @@ export default function HomePage() {
                      </TabsContent>
 
                      <TabsContent value="movies" className="mt-0">
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                            {movies.results.map((anime, i) => (
                               <AnimeCard key={i} anime={anime} />
                            ))}
@@ -126,7 +126,7 @@ export default function HomePage() {
                      </TabsContent>
 
                      <TabsContent value="popular" className="mt-0">
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                            {popular.results.map((anime, i) => (
                               <AnimeCard key={i} anime={anime} />
                            ))}

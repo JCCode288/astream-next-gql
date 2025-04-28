@@ -42,7 +42,8 @@ export default function Navbar() {
                   href="/"
                   className="flex items-center font-bold text-xl text-white"
                >
-                  <span className="text-rose-500 text-2xl">A</span>stream
+                  <span className="text-rose-500 text-2xl">A</span>
+                  <p className="hidden md:block">stream</p>
                </Link>
                <nav className="hidden md:flex gap-6">
                   <Link
@@ -66,7 +67,7 @@ export default function Navbar() {
                </nav>
             </div>
             <div className="flex items-center gap-4">
-               <div className="relative hidden md:block w-full max-w-sm">
+               <div className="relative w-full max-w-sm">
                   <Search
                      onClick={handleIconTap}
                      className="absolute left-2.5 top-2.5 h-4 w-4 text-zinc-500 cursor-pointer"
