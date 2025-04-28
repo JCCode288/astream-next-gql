@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
-import { Calendar, Info, Play, Plus } from "lucide-react";
+import { Calendar, Play } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { IAnimeEpisode } from "@consumet/extensions";
 import Link from "next/link";
