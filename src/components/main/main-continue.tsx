@@ -1,6 +1,6 @@
 import { ChevronRight } from "lucide-react";
-import { Button } from "./ui/button";
-import ContinueWatchingCard from "./main/continue-card";
+import { Button } from "../ui/button";
+import ContinueWatchingCard from "./continue-card";
 import { IAnimeEpisode } from "@consumet/extensions";
 
 export interface IContinueProps {

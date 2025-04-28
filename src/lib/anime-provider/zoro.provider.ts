@@ -44,6 +44,7 @@ export default class ZoroProvider
          popular_prom,
       ]);
 
+      console.log(recent.results);
       return {
          recent,
          top,

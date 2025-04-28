@@ -34,7 +34,7 @@ export default function Player() {
       });
 
       artPlayer.on("destroy", () => {
-         artPlayer.hls.destroy();
+         artPlayer?.hls?.destroy();
       });
 
       artPlayer.on("ready", () => {
@@ -46,7 +46,7 @@ export default function Player() {
 
       return () => {
          artPlayer.destroy();
-         artPlayer.hls.destroy();
+         artPlayer?.hls?.destroy();
       };
    }, [streamDiv.current, currentSource, qualities, currentSubs]);
 
