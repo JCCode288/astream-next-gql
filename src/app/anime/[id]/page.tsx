@@ -30,7 +30,7 @@ export default function AnimeDetailPage() {
    if (loading) return <Loading />;
 
    return (
-      <div className="min-h-screen bg-black text-white flex flex-col px-4">
+      <div className="flex-1 flex flex-col min-h-screen bg-black text-white md:px-8 px-2 justify-center items-center">
          {/* Hero Section with Anime Cover */}
          <div className="relative">
             {/* Back Button */}

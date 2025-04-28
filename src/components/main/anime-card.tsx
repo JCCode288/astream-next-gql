@@ -9,7 +9,7 @@ export default function AnimeCard({ anime }: { anime: IAnimeResult }) {
    const { cover, title, id, image } = anime;
 
    return (
-      <Link href={"/anime/" + id} className="group">
+      <Link href={"/anime/" + id} className="group flex justify-center">
          <Card className="overflow-hidden bg-zinc-900 border-zinc-800 transition-all hover:border-rose-500/50 hover:shadow-md hover:shadow-rose-500/10 max-w-72 w-full p-1">
             <div className="aspect-[4/5] relative overflow-hidden">
                <Image
