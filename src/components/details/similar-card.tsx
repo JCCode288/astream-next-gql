@@ -6,8 +6,8 @@ import { IAnimeResult } from "@consumet/extensions";
 
 export default function SimilarAnimeCard({ rec }: { rec: IAnimeResult }) {
    return (
-      <Link href="#" className="group cursor-pointer">
-         <Card className="overflow-hidden bg-zinc-900 border-zinc-800 transition-all hover:border-rose-500/50 hover:shadow-md hover:shadow-rose-500/10">
+      <Link href={"/anime/" + rec.id} className="group cursor-pointer">
+         <Card className="overflow-hidden bg-zinc-900 border-zinc-800 transition-all hover:border-rose-500/50 hover:shadow-md hover:shadow-rose-500/10 aspect-[3/5]">
             <div className="aspect-[2/3] relative overflow-hidden">
                <Image
                   src={rec.image!}

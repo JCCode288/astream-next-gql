@@ -14,6 +14,7 @@ import Loading from "./loading";
 import { Badge } from "@/components/ui/badge";
 import { IAnimeResult } from "@consumet/extensions";
 import Player from "@/components/player";
+import BackHomeButton from "@/components/back-home-button";
 
 export default function WatchPage() {
    const { id: animeId, epsId: episodeId } = useParams();
@@ -37,6 +38,7 @@ export default function WatchPage() {
    return (
       <div className="min-h-screen bg-black text-white flex flex-col">
          {/* Video Player Container */}
+         <BackHomeButton />
          <Player />
 
          {/* Episode Information Section */}

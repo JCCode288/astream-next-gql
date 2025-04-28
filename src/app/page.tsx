@@ -10,13 +10,43 @@ import AnimeCard from "@/components/main/anime-card";
 import useMainAnimes from "@/components/hooks/useAnimes";
 import MainHero from "@/components/main/main-hero";
 import MainGenres from "@/components/main/main-genres";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import Loading from "./loading";
 
 export default function HomePage() {
    const { loading, error, animes } = useMainAnimes();
 
-   if (loading) return <div className="flex-1">Loading...</div>;
-   if (!animes) return <>Please comeback again later</>;
+   const [tabVal, setTabVal] = useState(() => "recent");
+   const sectionName = useMemo(() => {
+      switch (tabVal) {
+         case "recent":
+            return "Recent Anime";
+         case "trending":
+            return "Trending Anime";
+         case "movies":
+            return "Anime Movies";
+         case "popular":
+            return "Popular Animes";
+         default:
+            return "Animes";
+      }
+   }, [tabVal]);
+
+   if (loading)
+      return (
+         <div className="flex-1">
+            <Loading />
+         </div>
+      );
+   if (!animes)
+      return (
+         <div
+            className="flex flex-1 bg-black text-white text-center
+   "
+         >
+            Server had trouble. Please comeback again later
+         </div>
+      );
 
    const { recent, top, popular, movies } = animes;
 
@@ -33,10 +63,15 @@ export default function HomePage() {
             {/* Content Sections */}
             <section className="py-12">
                <div className="container">
-                  <Tabs defaultValue="recent" className="mb-12">
+                  <Tabs
+                     defaultValue="recent"
+                     value={tabVal}
+                     onValueChange={setTabVal}
+                     className="mb-12"
+                  >
                      <div className="flex items-center justify-between mb-6">
                         <h2 className="text-2xl font-bold">
-                           Recent Anime
+                           {sectionName}
                         </h2>
                         <TabsList className="bg-zinc-900">
                            <TabsTrigger
