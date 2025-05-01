@@ -12,6 +12,7 @@ const typeDefs = gql`
          movie_page: Int
          popular_page: Int
       ): ZoroResult
+      user(userId: ID, browserId: ID): User
    }
 
    type Mutation {
@@ -121,6 +122,24 @@ const typeDefs = gql`
       isDASH: Boolean
       size: Int
       type: String
+   }
+
+   type User {
+      name: String
+      browserId: String!
+      userId: String
+      config: UserConfig
+      watchlist: [Watchlist]!
+   }
+
+   type UserConfig {
+      autoplay: Boolean
+      theme: String!
+   }
+
+   type Watchlist {
+      episode: Episode!
+      timestamp: String!
    }
 `;
 

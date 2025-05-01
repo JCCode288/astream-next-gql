@@ -8,6 +8,7 @@ import {
    IContextBody,
    IVariableID,
    IVariableQuery,
+   IVariableUser,
 } from "./interfaces/context.interface";
 import { IAnimeResult, ISearch } from "@consumet/extensions";
 
@@ -75,6 +76,12 @@ const resolvers = {
             throw err;
          }
       },
+
+      user: async (
+         _: unknown,
+         { userId, browserId }: IVariableUser,
+         { ip }: IContextBody
+      ) => {},
    },
    Mutation: {
       search: async (
