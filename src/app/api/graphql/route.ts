@@ -10,6 +10,10 @@ const handler = startServerAndCreateNextHandler(server, {
       let provider = headers.get("x-ani-provider");
       const origin = headers.get("origin");
       const referer = headers.get("referer");
+      let ip = headers.get("x-forwarded-for");
+
+      if (!ip) ip = headers.get("ip");
+      ip = ip?.replace(/^:(.*):/, "");
 
       console.log({
          token,
@@ -17,9 +21,15 @@ const handler = startServerAndCreateNextHandler(server, {
          origin,
          referer,
          whitelist: process.env.WHITELIST,
+         ip,
       });
 
-      if (!origin || !referer)
+      if (!origin || !referer || !ip)
+         throw new ApolloError({
+            networkError: new Error("cannot access"),
+         });
+
+      if (process.env.NODE_ENV !== "development" && ip === "127.0.0.1")
          throw new ApolloError({
             networkError: new Error("cannot access"),
          });
@@ -39,34 +49,12 @@ const handler = startServerAndCreateNextHandler(server, {
          });
       }
 
-      if (!provider) {
-         provider = ProviderEnum.ZORO;
-
-         return {
-            token,
-            provider,
-         };
-      }
-      if (typeof provider !== "string") {
-         provider = ProviderEnum.ZORO;
-
-         return {
-            token,
-            provider,
-         };
-      }
-      if (!Object.values(ProviderEnum).includes(provider as any)) {
-         provider = ProviderEnum.ZORO;
-
-         return {
-            token,
-            provider,
-         };
-      }
+      provider = ProviderEnum.ZORO;
 
       return {
          token,
          provider,
+         ip,
       };
    },
 });
