@@ -15,12 +15,12 @@ export default function Loading() {
 
                      <div className="mt-0">
                         <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                           {Array.from({ length: 12 }, (_, i) => (
+                           {Array.from({ length: 40 }, (_, i) => (
                               <div
                                  className="flex w-full h-full justify-center items-center"
                                  key={`sk-card-${i}`}
                               >
-                                 <Skeleton className="aspect-[4/5] h-[35lvh] bg-zinc-800" />
+                                 <Skeleton className="aspect-[3.2/5] w-full bg-zinc-800 sm:h-[30lvw] max-h-[42lvh]" />
                               </div>
                            ))}
                         </div>
@@ -28,7 +28,7 @@ export default function Loading() {
                   </div>
                </div>
             </section>
-            <div className="container py-8">
+            {/* <div className="container py-8">
                <div className="flex flex-wrap gap-4 mb-6">
                   {Array.from({ length: 12 }, (_, i) => (
                      <Skeleton
@@ -37,7 +37,7 @@ export default function Loading() {
                      />
                   ))}
                </div>
-            </div>
+            </div> */}
          </main>
       </div>
    );

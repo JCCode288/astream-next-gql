@@ -7,13 +7,18 @@ import {
    GoogleAuthProvider,
    signInWithPopup,
 } from "firebase/auth";
-import { FirebaseApp, getApp, initializeApp } from "firebase/app";
+import { FirebaseApp } from "firebase/app";
 import firebaseStore from "./firebase.store";
 
 const initialData: IAuthData = {
-   userId: "",
+   browserId: null,
+   userId: null,
    token: null,
    isLoggedIn: false,
+   config: {
+      theme: "dark",
+      autoplay: false,
+   },
 };
 
 const authStore = create<IAuthStore>()(
@@ -51,7 +56,7 @@ const authStore = create<IAuthStore>()(
       }),
       {
          name: "auth-data",
-         storage: createJSONStorage(() => sessionStorage),
+         storage: createJSONStorage(() => localStorage),
       }
    )
 );
