@@ -10,6 +10,7 @@ import {
    IZoroPagination,
    ProviderStrategy,
 } from "./provider.interfaces";
+import { durationToNumber } from "../utils.duration";
 
 export default class ZoroProvider
    implements
@@ -44,7 +45,6 @@ export default class ZoroProvider
          popular_prom,
       ]);
 
-      console.log(recent.results);
       return {
          recent,
          top,

@@ -4,9 +4,14 @@ import Link from "next/link";
 import { Card, CardContent } from "../ui/card";
 import Image from "next/image";
 import { IAnimeResult } from "@consumet/extensions";
+import {
+   durationToDuration,
+   durationToNumber,
+   numberToDuration,
+} from "@/lib/utils.duration";
 
 export default function AnimeCard({ anime }: { anime: IAnimeResult }) {
-   const { cover, title, id, image } = anime;
+   const { cover, title, id, image, releaseDate, duration } = anime;
 
    return (
       <Link href={"/anime/" + id} className="group flex justify-center">
@@ -25,7 +30,10 @@ export default function AnimeCard({ anime }: { anime: IAnimeResult }) {
                   {title.toString()}
                </h3>
                <div className="flex items-center justify-between mt-1 text-xs text-zinc-400">
-                  <span>2023</span>
+                  <span>{releaseDate}</span>
+               </div>
+               <div className="flex items-center justify-between mt-1 text-xs text-zinc-400">
+                  <span>{durationToDuration(duration)}</span>
                </div>
             </CardContent>
          </Card>

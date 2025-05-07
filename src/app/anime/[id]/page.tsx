@@ -40,13 +40,14 @@ export default function AnimeDetailPage() {
             <div className="container relative z-10 grid grid-cols-1 md:grid-cols-[300px_1fr] gap-8 py-12">
                {/* Anime Poster */}
                <div className="flex flex-col gap-4">
-                  <div className="relative aspect-[2/3] overflow-hidden rounded-lg border-2 border-zinc-800 shadow-xl">
+                  <div className="flex relative aspect-[2/3] overflow-hidden rounded-lg border-2 border-zinc-800 shadow-xl max-h-[50lvh] w-auto">
                      <Image
                         src={detail?.cover ?? detail?.image!}
-                        alt="Anime Poster"
+                        alt={detail?.id + "-poster"}
                         className="object-cover"
-                        height={450}
-                        width={300}
+                        fill
+                        // height={450}
+                        // width={300}
                      />
                   </div>
                   <div className="flex gap-2">
