@@ -1,4 +1,4 @@
-import typeDefs from "./type.defs";
+import typeDefs from "./type-defs/type.defs";
 import resolvers from "./resolvers";
 import { ApolloServer } from "@apollo/server";
 import { InMemoryLRUCache } from "@apollo/utils.keyvaluecache";

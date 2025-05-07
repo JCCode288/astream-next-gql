@@ -9,7 +9,6 @@ import {
 import AnimeCard from "@/components/main/anime-card";
 import useMainAnimes from "@/components/hooks/useAnimes";
 import MainHero from "@/components/main/main-hero";
-import MainGenres from "@/components/main/main-genres";
 import { useMemo, useState } from "react";
 import Loading from "./loading";
 

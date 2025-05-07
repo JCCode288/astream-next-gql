@@ -26,6 +26,7 @@ export const ANIMES_QUERY = gql`
                rating
                type
                releaseDate
+               duration
             }
             currentPage
             hasNextPage
@@ -41,6 +42,7 @@ export const ANIMES_QUERY = gql`
                rating
                type
                releaseDate
+               duration
             }
             currentPage
             hasNextPage
@@ -56,6 +58,7 @@ export const ANIMES_QUERY = gql`
                rating
                type
                releaseDate
+               duration
             }
             currentPage
             hasNextPage
@@ -71,6 +74,7 @@ export const ANIMES_QUERY = gql`
                rating
                type
                releaseDate
+               duration
             }
             currentPage
             hasNextPage

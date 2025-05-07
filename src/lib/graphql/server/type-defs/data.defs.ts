@@ -1,24 +1,6 @@
 import gql from "graphql-tag";
 
-const typeDefs = gql`
-   type Query {
-      hello: String
-      detail(id: ID!): DetailResult
-      watch(id: ID!): Source
-      main(
-         page: Int
-         recent_page: Int
-         top_page: Int
-         movie_page: Int
-         popular_page: Int
-      ): ZoroResult
-      user(userId: ID, browserId: ID): User
-   }
-
-   type Mutation {
-      search(query: String!, page: Int): AnimeResult
-   }
-
+const dataTypeDefs = gql`
    type Anime {
       id: ID!
       title: String!
@@ -29,6 +11,7 @@ const typeDefs = gql`
       rating: Int
       type: String
       releaseDate: String
+      duration: String
    }
 
    type AnimeResult {
@@ -125,11 +108,15 @@ const typeDefs = gql`
    }
 
    type User {
-      name: String
+      name: String!
+      email: String
       browserId: String!
       userId: String
+      canComment: Boolean!
       config: UserConfig
-      watchlist: [Watchlist]!
+      watchlists: [Watchlist]!
+      createdAt: String
+      updatedAt: String
    }
 
    type UserConfig {
@@ -139,8 +126,16 @@ const typeDefs = gql`
 
    type Watchlist {
       episode: Episode!
-      timestamp: String!
+      timestamp: Int!
+      duration: Int
+   }
+
+   type Comment {
+      userId: ID!
+      comment: String!
+      createdAt: String
+      updatedAt: String
    }
 `;
 
-export default typeDefs;
+export default dataTypeDefs;
