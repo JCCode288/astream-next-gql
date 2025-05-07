@@ -14,6 +14,8 @@ import { IAnimeResult, ISearch } from "@consumet/extensions";
 
 export type MainPagination = { page?: number } & IZoroPagination;
 
+export type ICommentVariable = { epsId: string };
+
 const providers = {
    [ProviderEnum.ANIDRV]: new AniDriveProvider(),
    [ProviderEnum.ZORO]: new ZoroProvider(),
@@ -69,6 +71,7 @@ const resolvers = {
             const aniProvider = getProvider(provider);
 
             const watch = await aniProvider.watch(id);
+
             console.log(watch, "[Watch Data]");
             return watch;
          } catch (err) {
@@ -105,6 +108,44 @@ const resolvers = {
          console.log(search, "[Search Data]");
          return search;
       },
+
+      login: async (
+         _: unknown,
+         loginData: unknown,
+         context: IContextBody
+      ) => {},
+
+      register: async (
+         _: unknown,
+         registerData: unknown,
+         context: IContextBody
+      ) => {},
+
+      addComment: async (
+         _: unknown,
+         commentBody: unknown,
+         context: IContextBody
+      ) => {},
+
+      editComment: async (
+         _: unknown,
+         commentBody: unknown,
+         context: IContextBody
+      ) => {},
+
+      deleteComment: async (
+         _: unknown,
+         commentId: unknown,
+         context: IContextBody
+      ) => {},
+   },
+
+   Subscription: {
+      commentSection: async (
+         _: unknown,
+         { epsId }: ICommentVariable,
+         context: IContextBody
+      ) => {},
    },
 };
 
