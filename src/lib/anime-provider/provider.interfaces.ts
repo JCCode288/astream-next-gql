@@ -8,7 +8,16 @@ export interface IZoroPagination {
    search_page: number;
 }
 
-export interface ProviderStrategy<T, K, V = ISearch<T>> {
+export interface IMainResult<T> {
+   keys: string[];
+   datas: T;
+}
+
+export interface ProviderStrategy<
+   T,
+   K,
+   V = IMainResult<Record<string, ISearch<IAnimeResult>>>
+> {
    getMainPage(page: number): Promise<V>;
    getMainPage(paginations: IZoroPagination): Promise<V>;
    getDetail(id: string | number): Promise<T>;
@@ -26,12 +35,4 @@ export interface IPagination {
    hasNextPage?: boolean;
    totalPages?: number;
    totalResults?: number;
-}
-
-export interface IZoroMain<T> {
-   recent: T;
-   top: T;
-   movies: T;
-   popular: T;
-   highlighted?: IAnimeResult;
 }

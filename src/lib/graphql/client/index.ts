@@ -50,9 +50,7 @@ function buildLink(uri: string) {
 
 const client = new ApolloClient({
    ssrMode: true,
-   cache: new InMemoryCache({
-      resultCaching: false,
-   }),
+   cache: new InMemoryCache(),
    credentials: "same-site",
    link: buildLink("/api/graphql"),
 });

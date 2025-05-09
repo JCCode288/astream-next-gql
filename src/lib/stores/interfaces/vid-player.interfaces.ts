@@ -1,4 +1,5 @@
 import { ISubtitle, IVideo } from "@consumet/extensions";
+import Hls from "hls.js";
 
 export interface IVideoQuality {
    default: boolean;
@@ -8,6 +9,7 @@ export interface IVideoQuality {
 
 export interface IGenerateOpts {
    currentSource: IVideo | null;
+   hls: Hls;
    referer?: string;
    qualities: IVideoQuality[];
    currentSubs?: string;

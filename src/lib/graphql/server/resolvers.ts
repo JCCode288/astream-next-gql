@@ -11,6 +11,7 @@ import {
    IVariableUser,
 } from "./interfaces/context.interface";
 import { IAnimeResult, ISearch } from "@consumet/extensions";
+import client from "@/lib/database";
 
 export type MainPagination = { page?: number } & IZoroPagination;
 
@@ -18,7 +19,7 @@ export type ICommentVariable = { epsId: string };
 
 const providers = {
    [ProviderEnum.ANIDRV]: new AniDriveProvider(),
-   [ProviderEnum.ZORO]: new ZoroProvider(),
+   [ProviderEnum.ZORO]: new ZoroProvider(client),
 };
 
 const resolvers = {
@@ -70,7 +71,29 @@ const resolvers = {
             console.log(id, "[Watch ID]");
             const aniProvider = getProvider(provider);
 
+            const [animeId, episodeId] = id.split("$episode$");
+
+            console.log({ animeId, episodeId });
+
             const watch = await aniProvider.watch(id);
+            const params = new URLSearchParams();
+            if (watch.headers?.Referer)
+               params.append("ref", watch.headers.Referer);
+
+            watch.sources.map((src) => {
+               src.url = `/api/stream/${src.url}?${params.toString()}`;
+               return src;
+            });
+
+            watch.subtitles?.map((sub) => {
+               const subParams = new URLSearchParams({
+                  url: encodeURIComponent(sub.url),
+                  animeId,
+                  episodeId,
+               });
+               sub.url = `/api/subs?${subParams.toString()}`;
+               return sub;
+            });
 
             console.log(watch, "[Watch Data]");
             return watch;

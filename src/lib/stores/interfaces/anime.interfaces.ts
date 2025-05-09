@@ -1,5 +1,5 @@
 import {
-   IZoroMain,
+   IMainResult,
    IZoroPagination,
    ProviderEnum,
 } from "@/lib/anime-provider/provider.interfaces";
@@ -24,7 +24,7 @@ export interface IHistoryStore extends IHistoryData {
 
 export interface IAnimeData extends IZoroPagination {
    search: ISearch<IAnimeResult> | null;
-   main: IZoroMain<ISearch<IAnimeResult>> | null;
+   main: IMainResult<Record<string, ISearch<IAnimeResult>>> | null;
    detail: IAnimeInfo | null;
    page: number;
    query: string | null;

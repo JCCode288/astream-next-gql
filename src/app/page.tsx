@@ -11,24 +11,16 @@ import useMainAnimes from "@/components/hooks/useAnimes";
 import MainHero from "@/components/main/main-hero";
 import { useMemo, useState } from "react";
 import Loading from "./loading";
+import capitalize from "@/lib/utils.capitalize";
 
 export default function HomePage() {
    const { loading, error, animes } = useMainAnimes();
 
+   console.log(animes);
+
    const [tabVal, setTabVal] = useState(() => "recent");
    const sectionName = useMemo(() => {
-      switch (tabVal) {
-         case "recent":
-            return "Recent Anime";
-         case "trending":
-            return "Trending Anime";
-         case "movies":
-            return "Anime Movies";
-         case "popular":
-            return "Popular Animes";
-         default:
-            return "Animes";
-      }
+      return `${capitalize(tabVal)} Animes`;
    }, [tabVal]);
 
    if (loading)
@@ -37,7 +29,8 @@ export default function HomePage() {
             <Loading />
          </div>
       );
-   if (!animes)
+
+   if (!animes || error)
       return (
          <div
             className="flex flex-1 bg-black text-white text-center
@@ -47,15 +40,15 @@ export default function HomePage() {
          </div>
       );
 
-   const { recent, top, popular, movies } = animes;
-
    return (
       <div className="flex flex-1 flex-col bg-black text-white justify-center items-center">
          <main>
             {/* Hero Section */}
-            {animes.highlighted && (
+            {animes?.datas?.highlighted && (
                <section className="relative h-[70dvh] overflow-hidden">
-                  <MainHero highlighted={animes.highlighted} />
+                  <MainHero
+                     highlighted={animes.datas?.highlighted?.results[0]}
+                  />
                </section>
             )}
 
@@ -73,64 +66,38 @@ export default function HomePage() {
                            {sectionName}
                         </h2>
                         <TabsList className="bg-zinc-900">
-                           <TabsTrigger
-                              value="recent"
-                              className="data-[state=active]:bg-rose-500"
-                           >
-                              Recent
-                           </TabsTrigger>
-                           <TabsTrigger
-                              value="trending"
-                              className="data-[state=active]:bg-rose-500"
-                           >
-                              Trending
-                           </TabsTrigger>
-                           <TabsTrigger
-                              value="movies"
-                              className="data-[state=active]:bg-rose-500"
-                           >
-                              Movies
-                           </TabsTrigger>
-                           <TabsTrigger
-                              value="popular"
-                              className="data-[state=active]:bg-rose-500"
-                           >
-                              Popular
-                           </TabsTrigger>
+                           {animes.keys.map((k, i) => {
+                              return (
+                                 <TabsTrigger
+                                    key={`key-${i}`}
+                                    value={k}
+                                    className="data-[state=active]:bg-rose-500"
+                                 >
+                                    {capitalize(k)}
+                                 </TabsTrigger>
+                              );
+                           })}
                         </TabsList>
                      </div>
 
-                     <TabsContent value="recent" className="mt-0">
-                        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                           {recent.results.map((anime, i) => (
-                              <AnimeCard key={i} anime={anime} />
-                           ))}
-                        </div>
-                     </TabsContent>
+                     {animes.keys.map((k, i) => {
+                        const animeDatas = animes?.datas[k];
+                        if (!animeDatas) return null;
 
-                     <TabsContent value="trending" className="mt-0">
-                        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                           {top.results.map((anime, i) => (
-                              <AnimeCard key={i} anime={anime} />
-                           ))}
-                        </div>
-                     </TabsContent>
-
-                     <TabsContent value="movies" className="mt-0">
-                        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                           {movies.results.map((anime, i) => (
-                              <AnimeCard key={i} anime={anime} />
-                           ))}
-                        </div>
-                     </TabsContent>
-
-                     <TabsContent value="popular" className="mt-0">
-                        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                           {popular.results.map((anime, i) => (
-                              <AnimeCard key={i} anime={anime} />
-                           ))}
-                        </div>
-                     </TabsContent>
+                        return (
+                           <TabsContent
+                              key={`content-${i}`}
+                              value={k}
+                              className="mt-0"
+                           >
+                              <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                                 {animeDatas.results.map((anime, i) => (
+                                    <AnimeCard key={i} anime={anime} />
+                                 ))}
+                              </div>
+                           </TabsContent>
+                        );
+                     })}
                   </Tabs>
 
                   {/* Continue Watching Section */}

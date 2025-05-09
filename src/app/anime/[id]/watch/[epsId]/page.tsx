@@ -31,13 +31,16 @@ export default function WatchPage() {
       anime,
    } = useWatchAnime(animeId as string, id);
 
-   if (loading) return <Loading />;
+   if (loading || !anime) return <Loading />;
 
    return (
       <div className="min-h-screen bg-black text-white flex flex-col">
          {/* Video Player Container */}
          <BackHomeButton />
-         <Player />
+         <Player
+            epsId={episodeId?.toString()}
+            animeId={animeId?.toString()}
+         />
 
          {/* Episode Information Section */}
          <div className="container py-6">

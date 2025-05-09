@@ -1,9 +1,16 @@
+import hlsBuilder from "@/lib/hls.builder";
 import playerConfig from "@/lib/player.config";
 import videoStore from "@/lib/stores/video.store";
 import Artplayer from "artplayer";
 import { useEffect, useRef, useState } from "react";
 
-export default function Player() {
+export default function Player({
+   animeId,
+   epsId,
+}: {
+   animeId?: string;
+   epsId?: string;
+}) {
    const [art, setArt] = useState<Artplayer>();
 
    const streamDiv = useRef<HTMLDivElement>(null);
@@ -11,13 +18,19 @@ export default function Player() {
    const qualities = videoStore().qualities;
    const currentSubs = videoStore().currentSubs;
    const referer = videoStore().headers?.Referer;
-
-   console.log({ currentSource, qualities, currentSubs, referer });
+   console.log({
+      currentSource,
+      qualities,
+      currentSubs,
+      referer,
+   });
 
    useEffect(() => {
       if (!streamDiv.current) return;
       if (!currentSource) return;
       if (!currentSubs?.url) return;
+
+      const hls = hlsBuilder(animeId, epsId);
 
       const config = playerConfig({
          currentSource,
@@ -25,6 +38,7 @@ export default function Player() {
          qualities,
          currentSubs: currentSubs.url,
          div: streamDiv.current,
+         hls,
       });
 
       Artplayer.MOBILE_CLICK_PLAY = true;
