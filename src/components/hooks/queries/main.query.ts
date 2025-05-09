@@ -15,69 +15,72 @@ export const ANIMES_QUERY = gql`
          movie_page: $movie_page
          popular_page: $popular_page
       ) {
-         recent {
-            results {
-               id
-               title
-               url
-               image
-               cover
-               status
-               rating
-               type
-               releaseDate
-               duration
+         keys
+         datas {
+            recent {
+               results {
+                  id
+                  title
+                  url
+                  image
+                  cover
+                  status
+                  rating
+                  type
+                  releaseDate
+                  duration
+               }
+               currentPage
+               hasNextPage
             }
-            currentPage
-            hasNextPage
-         }
-         top {
-            results {
-               id
-               title
-               url
-               image
-               cover
-               status
-               rating
-               type
-               releaseDate
-               duration
+            top {
+               results {
+                  id
+                  title
+                  url
+                  image
+                  cover
+                  status
+                  rating
+                  type
+                  releaseDate
+                  duration
+               }
+               currentPage
+               hasNextPage
             }
-            currentPage
-            hasNextPage
-         }
-         movies {
-            results {
-               id
-               title
-               url
-               image
-               cover
-               status
-               rating
-               type
-               releaseDate
-               duration
+            movies {
+               results {
+                  id
+                  title
+                  url
+                  image
+                  cover
+                  status
+                  rating
+                  type
+                  releaseDate
+                  duration
+               }
+               currentPage
+               hasNextPage
             }
-            currentPage
-            hasNextPage
-         }
-         popular {
-            results {
-               id
-               title
-               url
-               image
-               cover
-               status
-               rating
-               type
-               releaseDate
-               duration
+            popular {
+               results {
+                  id
+                  title
+                  url
+                  image
+                  cover
+                  status
+                  rating
+                  type
+                  releaseDate
+                  duration
+               }
+               currentPage
+               hasNextPage
             }
-            currentPage
-            hasNextPage
          }
       }
    }

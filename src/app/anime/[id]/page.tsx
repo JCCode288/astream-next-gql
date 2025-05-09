@@ -117,13 +117,14 @@ export default function AnimeDetailPage() {
 
                      {/* Anime Infos */}
                      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-                        <div className="flex items-center">
-                           <Star className="h-4 w-4 fill-yellow-500 text-yellow-500 mr-1" />
-                           <span className="font-medium">4.9</span>
-                           <span className="text-zinc-400 ml-1">
-                              (12.8k)
-                           </span>
-                        </div>
+                        {detail?.rating && (
+                           <div className="flex items-center">
+                              <Star className="h-4 w-4 fill-yellow-500 text-yellow-500 mr-1" />
+                              <span className="font-medium">
+                                 {detail?.rating}
+                              </span>
+                           </div>
+                        )}
                         <div className="text-zinc-400">
                            {detail?.startDate?.year}
                         </div>
