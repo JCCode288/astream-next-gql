@@ -20,11 +20,16 @@ const dataTypeDefs = gql`
       results: [Anime]
    }
 
-   type ZoroResult {
+   type MainAnimes {
       recent: AnimeResult
       top: AnimeResult
-      movies: AnimeResult
       popular: AnimeResult
+      movies: AnimeResult
+   }
+
+   type ZoroResult {
+      keys: [String]
+      datas: MainAnimes
    }
 
    type DetailResult {

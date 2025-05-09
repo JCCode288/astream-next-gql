@@ -33,9 +33,8 @@ export default function useWatchAnime(animeId: string, episodeId: string) {
       setSubs(subs ?? []);
       const qualities = data.watch?.quality;
       setQualities(qualities ?? []);
-      const currentSubs = subs.find(
-         (sub: ISubtitle) => sub.lang === "English"
-      );
+      const currentSubs =
+         subs.find((sub: ISubtitle) => sub.lang === "English") ?? subs[0];
       setCurrentSubs(currentSubs);
 
       // console.log({ sources, subs, qualities, currentSubs });

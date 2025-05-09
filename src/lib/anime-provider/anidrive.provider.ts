@@ -12,7 +12,14 @@ export default class AniDriveProvider
          if (typeof page !== "number")
             throw new Error("method not implemented");
 
-         return await this.provider.fetchRecentEpisodes(page);
+         const main = await this.provider.fetchRecentEpisodes(page);
+
+         return {
+            keys: ["main"],
+            datas: {
+               main,
+            },
+         };
       } catch (err) {
          console.error(err, "[Anidrive Error]");
          throw err;

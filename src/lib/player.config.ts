@@ -6,53 +6,23 @@ import { IGenerateOpts } from "./stores/interfaces/vid-player.interfaces";
 
 export default function playerConfig({
    currentSource,
-   referer,
    qualities,
    currentSubs,
+   hls,
    div,
 }: IGenerateOpts) {
-   const params = new URLSearchParams();
-   if (referer) params.append("ref", encodeURIComponent(referer));
-
-   const videoUrl = `/api/stream/${
-      currentSource?.url
-   }?${params.toString()}`;
-
    const opts: Option = {
       container: div ?? "#artplayer-app",
-      url: videoUrl,
+      url: currentSource?.url,
       customType: {
          m3u8: function (this, video, url, art) {
             if (Hls.isSupported()) {
                if (this.hls) this.hls.destroy();
-               const hls = new Hls();
 
                hls.loadSource(url);
                hls.attachMedia(video);
-               this.hls = hls;
 
-               hls.on(Hls.Events.ERROR, (_, data) => {
-                  if (data.fatal) {
-                     switch (data.type) {
-                        case Hls.ErrorTypes.NETWORK_ERROR:
-                           console.error(
-                              "Network error, trying to recover..."
-                           );
-                           hls.startLoad();
-                           break;
-                        case Hls.ErrorTypes.MEDIA_ERROR:
-                           console.error(
-                              "Media error, trying to recover..."
-                           );
-                           hls.recoverMediaError();
-                           break;
-                        default:
-                           console.error("Unrecoverable error");
-                           hls.destroy();
-                           break;
-                     }
-                  }
-               });
+               this.hls = hls;
 
                this.on("destroy", () => hls.destroy());
             } else if (
