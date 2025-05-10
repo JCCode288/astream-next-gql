@@ -10,7 +10,8 @@ export async function GET(req: NextRequest) {
       let animeId = query.get("animeId");
       let episodeId = query.get("episodeId");
 
-      if (!paramsUrl) throw new Error("Referer or URL is invalid");
+      if (!paramsUrl || !animeId || !episodeId)
+         throw new Error("Referer or URL is invalid");
       paramsUrl = decodeURIComponent(paramsUrl);
 
       const filter = {
@@ -19,11 +20,16 @@ export async function GET(req: NextRequest) {
       };
       let resHeaders: Record<string, string> = {};
 
-      let subsData = await client.collection("subs").findOne(filter);
+      const subsData = await getFromAPI(filter);
 
       if (subsData) {
          console.log("<< DB Hit Subs >>");
-         return new NextResponse(subsData.data?.buffer, {
+         if (subsData.data instanceof Binary)
+            return new NextResponse(subsData.data?.buffer, {
+               headers: subsData.headers,
+            });
+
+         return new NextResponse(subsData.data, {
             headers: subsData.headers,
          });
       }
@@ -45,20 +51,13 @@ export async function GET(req: NextRequest) {
 
       const data = await res.arrayBuffer();
 
-      try {
-         const streamData = {
-            ...filter,
-            data: new Binary(Buffer.from(data)),
-            headers: resHeaders,
-         };
-
-         console.log(streamData);
-
-         const _ = await client.collection("subs").insertOne(streamData);
-      } catch (err) {
-         console.error(err);
-         console.log("[Failed to save stream]");
-      }
+      const saveSubs: ISubsData = {
+         animeId,
+         episodeId,
+         data: new Binary(Buffer.from(data)),
+         headers: resHeaders,
+      };
+      await saveToAPI(saveSubs);
 
       return new NextResponse(data, {
          headers: resHeaders,
@@ -66,5 +65,42 @@ export async function GET(req: NextRequest) {
    } catch (err) {
       console.log(err);
       throw err;
+   }
+}
+
+// @todo - later refactor the interfaces
+export interface ISubsFilter {
+   animeId: string;
+   episodeId: string;
+}
+
+export interface ISubsData extends ISubsFilter {
+   data: string | Binary; // base64 from buffer subtitle @todo - later change to only string
+   headers: Record<string, string>;
+}
+
+async function getFromAPI(
+   filter: ISubsFilter
+): Promise<ISubsData | undefined> {
+   try {
+      let subsData = await client
+         .collection<ISubsData>("subs")
+         .findOne(filter);
+
+      if (subsData) return subsData;
+
+      return;
+   } catch (err) {
+      console.log("[Failed to retrieve subtitle] ", err);
+      return;
+   }
+}
+
+async function saveToAPI(subsData: ISubsData) {
+   try {
+      const _ = await client.collection("subs").insertOne(subsData);
+   } catch (err) {
+      console.error(err);
+      console.log("[Failed to save stream]");
    }
 }

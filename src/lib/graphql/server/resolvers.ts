@@ -22,6 +22,9 @@ const providers = {
    [ProviderEnum.ZORO]: new ZoroProvider(client),
 };
 
+/**
+ * @todo move API provider operation to this layer
+ */
 const resolvers = {
    Query: {
       main: async (
