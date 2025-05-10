@@ -1,11 +1,11 @@
 import Hls from "hls.js";
 
-export default function hlsBuilder(animeId?: string, epsId?: string) {
+export default function hlsBuilder(animeId: string, epsId: string) {
    const hls = new Hls({
       enableWorker: true,
       xhrSetup: (xhr, url) => {
-         if (animeId) xhr.setRequestHeader("X-Anime-ID", animeId);
-         if (epsId) xhr.setRequestHeader("X-Episode-ID", epsId);
+         xhr.setRequestHeader("X-Anime-ID", animeId);
+         xhr.setRequestHeader("X-Episode-ID", epsId);
       },
    });
 

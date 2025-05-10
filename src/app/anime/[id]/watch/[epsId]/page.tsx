@@ -31,7 +31,7 @@ export default function WatchPage() {
       anime,
    } = useWatchAnime(animeId as string, id);
 
-   if (loading || !anime) return <Loading />;
+   if (loading || !anime || !animeId || !episodeId) return <Loading />;
 
    return (
       <div className="min-h-screen bg-black text-white flex flex-col">
@@ -40,6 +40,7 @@ export default function WatchPage() {
          <Player
             epsId={episodeId?.toString()}
             animeId={animeId?.toString()}
+            key={`${episodeId?.toString()}-${animeId?.toString()}`}
          />
 
          {/* Episode Information Section */}
