@@ -53,7 +53,9 @@ export async function GET(
       const data = await res.arrayBuffer();
 
       const streamData = {
-         ...filter,
+         animeId,
+         episodeId,
+         segment,
          data: Buffer.from(data).toString("base64"),
          headers: resHeaders,
       };
@@ -72,6 +74,19 @@ export async function GET(
    }
 }
 
+/**
+ *
+ * @todo Create API provider in library for better interface and separation for BE / Save operation
+ * Notes: this can be done after moving subtitle save operation to BE
+ */
+
+/**
+ *
+ * @param animeId anime ID from Zoro anime
+ * @param episodeId episode ID from Zoro anime
+ * @param segment segment pointer from m3u8 parameter
+ * @returns stream data either saved or fetched from original source
+ */
 async function getFromDB(
    animeId: string,
    episodeId: string,
@@ -112,7 +127,19 @@ async function getFromDB(
    }
 }
 
-async function saveToDB(data: Record<string, any>) {
+export interface IStreamData {
+   animeId: string;
+   episodeId: string;
+   segment: string;
+   data: string; // Buffer to base64
+   headers: Record<string, string>;
+}
+
+/**
+ *
+ * @param data stream data to save
+ */
+async function saveToDB(data: IStreamData) {
    try {
       const body = JSON.stringify(data);
       const key = `${data.animeId}:${data.episodeId}:${data.segment}:${data.data}`;
