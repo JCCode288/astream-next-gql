@@ -1,6 +1,5 @@
 import { ANIME, IAnimeResult, ISource } from "@consumet/extensions";
 import { IZoroPagination, ProviderStrategy } from "./provider.interfaces";
-import { assert } from "node:console";
 
 export default class AniDriveProvider
    implements ProviderStrategy<IAnimeResult, ISource>

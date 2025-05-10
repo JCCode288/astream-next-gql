@@ -2,7 +2,6 @@ import {
    ANIME,
    IAnimeInfo,
    IAnimeResult,
-   ISearch,
    ISource,
    StreamingServers,
 } from "@consumet/extensions";
@@ -11,6 +10,7 @@ import { Collection, Db } from "mongodb";
 
 /**
  * @description class implementation for Zoro Anime anime provider
+ * @todo move API / Save to DB operation out of this provider
  */
 export default class ZoroProvider
    implements ProviderStrategy<IAnimeResult, ISource>
