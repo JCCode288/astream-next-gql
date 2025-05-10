@@ -1,5 +1,4 @@
 import { createHmac } from "crypto";
-import { writeFile } from "fs/promises";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -7,6 +6,7 @@ export async function GET(
    { params }: { params: Promise<{ url: string[] }> }
 ) {
    try {
+      req.signal.throwIfAborted();
       const query = req.nextUrl.searchParams;
       const { url } = await params;
 
@@ -48,6 +48,7 @@ export async function GET(
       resHeaders["Origin"] = req.nextUrl.origin;
       resHeaders["Content-Type"] =
          res.headers.get("Content-Type") ?? "video/mp4";
+      resHeaders["Cache-Control"] = "no-cache, no-store";
 
       const data = await res.arrayBuffer();
 
@@ -87,11 +88,10 @@ async function getFromDB(
       const streamUrl = `${
          process.env.BE_URL
       }/api/v1/stream?${streamParams.toString()}`;
+      const key = `${query.animeId}:${query.episodeId}:${query.segment}`;
 
       const headers = {
-         "X-Validation": getValidationHash(
-            `${query.animeId}:${query.episodeId}:${query.segment}`
-         ),
+         "X-Validation": getValidationHash(key),
       };
 
       const res = await fetch(streamUrl, { headers });
@@ -115,10 +115,9 @@ async function getFromDB(
 async function saveToDB(data: Record<string, any>) {
    try {
       const body = JSON.stringify(data);
+      const key = `${data.animeId}:${data.episodeId}:${data.segment}:${data.data}`;
       const headers = {
-         "X-Validation": getValidationHash(
-            `${data.animeId}:${data.episodeId}:${data.segment}:${data.data}`
-         ),
+         "X-Validation": getValidationHash(key),
          "Content-Type": "application/json",
       };
 
@@ -127,14 +126,6 @@ async function saveToDB(data: Record<string, any>) {
          body,
          headers,
       });
-
-      await writeFile(
-         "data.json",
-         JSON.stringify({
-            data: `${data.animeId}:${data.episodeId}:${data.segment}:${data.data}`,
-            headers: headers["X-Validation"],
-         })
-      );
 
       if (!res.ok) throw await res.text();
    } catch (err) {

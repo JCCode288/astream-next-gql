@@ -32,6 +32,9 @@ const videoStore = create<IPlayerStore>()((set, get) => ({
    setSubs(subs) {
       set((state) => ({ ...state, subs }));
    },
+   reset() {
+      set(() => initialState);
+   },
 }));
 
 export default videoStore;
