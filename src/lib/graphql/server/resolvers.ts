@@ -11,7 +11,6 @@ import {
    IVariableUser,
 } from "./interfaces/context.interface";
 import { IAnimeResult, ISearch } from "@consumet/extensions";
-import client from "@/lib/database";
 
 export type MainPagination = { page?: number } & IZoroPagination;
 
@@ -19,7 +18,7 @@ export type ICommentVariable = { epsId: string };
 
 const providers = {
    [ProviderEnum.ANIDRV]: new AniDriveProvider(),
-   [ProviderEnum.ZORO]: new ZoroProvider(client),
+   [ProviderEnum.ZORO]: new ZoroProvider(),
 };
 
 /**

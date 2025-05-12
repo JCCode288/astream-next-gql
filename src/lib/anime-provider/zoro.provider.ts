@@ -6,7 +6,6 @@ import {
    StreamingServers,
 } from "@consumet/extensions";
 import { IZoroPagination, ProviderStrategy } from "./provider.interfaces";
-import { Collection, Db } from "mongodb";
 
 /**
  * @description class implementation for Zoro Anime anime provider
@@ -16,13 +15,7 @@ export default class ZoroProvider
    implements ProviderStrategy<IAnimeResult, ISource>
 {
    private readonly provider = new ANIME.Zoro();
-   private readonly db: Collection;
-   /**
-    * @param db MongoDB Database connection for anime detail data persistence
-    */
-   constructor(db: Db) {
-      this.db = db.collection("animes");
-   }
+   constructor() {}
 
    /**
     *
@@ -73,44 +66,9 @@ export default class ZoroProvider
     * @description this methods find anime by ID by checking to DB and provider to accomodate provider request limit
     */
    async getDetail(id: string) {
-      const filter = { id };
-      const dbAnime: any = await this.db.findOne(filter);
-
-      if (dbAnime && dbAnime.status === "Completed")
-         return dbAnime as IAnimeInfo;
-
       const anime = await this.provider.fetchAnimeInfo(id);
 
-      if (!dbAnime) {
-         anime.comments = [];
-         anime.ratings = [];
-         await this.db.insertOne(anime);
-      }
-
-      const updateDatas = {
-         episodes: anime.episodes,
-         totalEpisodes: anime.totalEpisodes,
-         status: anime.status,
-      };
-
-      const project = {
-         $set: updateDatas,
-      };
-
-      await this.db.updateOne(filter, project);
-      let res: Record<string, any> = {};
-
-      if (!dbAnime) {
-         res = { ...anime };
-         return res as IAnimeInfo;
-      }
-
-      res = {
-         ...dbAnime,
-         ...updateDatas,
-      };
-
-      return res as IAnimeInfo;
+      return anime as IAnimeInfo;
    }
    watch(id: string) {
       return this.provider.fetchEpisodeSources(
