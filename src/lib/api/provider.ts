@@ -50,8 +50,8 @@ export default class APIProvider {
          eps.data.data = Buffer.from(eps.data.data, "base64");
          return eps.data;
       } catch (err) {
-         // console.log("[Failed to get data]");
-         // console.error(err);s
+         console.log("[Failed to get data]");
+         console.error(err);
 
          return;
       }
@@ -84,8 +84,8 @@ export default class APIProvider {
 
          if (!res.ok) throw await res.text();
       } catch (err) {
-         // console.error(err);
-         // console.log("[Failed to save stream]");
+         console.error(err);
+         console.log("[Failed to save stream]");
       }
    }
    async getSubs(filter: ISubsFilter): Promise<ISubsData | undefined> {
@@ -99,13 +99,13 @@ export default class APIProvider {
             episodeId: filter.episodeId,
          });
 
+         const headers = {
+            "X-Validation": this.getValidationHash(key),
+         };
+
          const res = await fetch(
             `${this.BASE_URL}/api/v1/stream/subs?${params.toString()}`,
-            {
-               headers: {
-                  "X-Validation": this.getValidationHash(key),
-               },
-            }
+            { method: "GET", headers }
          );
 
          if (!res.ok) throw await res.text();
@@ -120,10 +120,26 @@ export default class APIProvider {
 
    async saveSubs(subsData: ISubsData) {
       try {
-         const _ = await client.collection("subs").insertOne(subsData);
+         const key = keyBuilder({
+            animeId: subsData.animeId,
+            episodeId: subsData.episodeId,
+            data: subsData.data,
+         });
+         const headers = {
+            "X-Validation": this.getValidationHash(key),
+            "Content-Type": "application/json",
+         };
+
+         const res = await fetch(`${this.BASE_URL}/api/v1/stream/subs`, {
+            method: "POST",
+            body: JSON.stringify(subsData),
+            headers,
+         });
+
+         if (!res.ok) throw await res.text();
       } catch (err) {
          console.error(err);
-         console.log("[Failed to save stream]");
+         console.log("[Failed to save subs]");
       }
    }
 
