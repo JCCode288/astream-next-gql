@@ -1,5 +1,3 @@
-import { Binary } from "mongodb";
-
 export interface IStreamData {
    animeId: string;
    episodeId: string;
