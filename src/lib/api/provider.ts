@@ -1,7 +1,5 @@
 import { createHmac } from "crypto";
 import { IStreamData, ISubsData, ISubsFilter } from "./api.interface";
-import client from "../database";
-import { headers } from "next/headers";
 import keyBuilder from "../utils.keybuilder";
 
 /**
