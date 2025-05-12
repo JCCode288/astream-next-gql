@@ -1,13 +1,13 @@
 import APIProvider from "@/lib/api/provider";
 import { NextRequest, NextResponse } from "next/server";
 
-const apiProvider = new APIProvider();
-
 export async function GET(
    req: NextRequest,
    { params }: { params: Promise<{ url: string[] }> }
 ) {
    try {
+      const apiProvider = new APIProvider();
+
       req.signal.throwIfAborted();
       const query = req.nextUrl.searchParams;
       const { url } = await params;
@@ -21,7 +21,7 @@ export async function GET(
       if (!paramsUrl || !animeId || !episodeId)
          throw new Error("Referer or URL is invalid");
 
-      const streamEps = await apiProvider.getFromDB(
+      const streamEps = await apiProvider.getStream(
          animeId,
          episodeId,
          segment
@@ -61,7 +61,7 @@ export async function GET(
          headers: resHeaders,
       };
 
-      await apiProvider.saveToDB(streamData);
+      await apiProvider.saveStream(streamData);
 
       if (res.headers.has("Expires"))
          resHeaders["Expires"] = res.headers.get("Expires")!;
@@ -74,9 +74,3 @@ export async function GET(
       throw err;
    }
 }
-
-/**
- *
- * @todo Create API provider in library for better interface and separation for BE / Save operation
- * Notes: this can be done after moving subtitle save operation to BE
- */
