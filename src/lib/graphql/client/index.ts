@@ -1,5 +1,3 @@
-"use client";
-
 import {
    ApolloClient,
    createHttpLink,
@@ -11,7 +9,7 @@ import authStore from "@/lib/stores/auth.store";
 import animeStore from "@/lib/stores/animes.store";
 
 function buildLink(uri: string) {
-   const baseLink = createHttpLink({ uri });
+   const baseLink = createHttpLink({ uri: `http://localhost:3000${uri}` });
    const contextLink = setContext(async (_, context) => {
       const token = authStore.getState().token;
       const provider = animeStore.getState().provider;
@@ -23,7 +21,7 @@ function buildLink(uri: string) {
             ...headers,
             authorization: token ? `Bearer ${token}` : null,
             "x-ani-provider": provider,
-            origin: process.env.NEXT_PUBLIC_URL,
+            origin: "http://localhost:3000",
          },
       };
    });
@@ -48,11 +46,13 @@ function buildLink(uri: string) {
    return errorLink.concat(contextLink).concat(baseLink);
 }
 
-const client = new ApolloClient({
-   ssrMode: true,
-   cache: new InMemoryCache(),
-   credentials: "same-site",
-   link: buildLink("/api/graphql"),
-});
+export function createClient() {
+   return new ApolloClient({
+      ssrMode: true,
+      cache: new InMemoryCache(),
+      credentials: "same-site",
+      link: buildLink("/api/graphql"),
+   });
+}
 
-export default client;
+export default createClient();

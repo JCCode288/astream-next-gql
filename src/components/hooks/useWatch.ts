@@ -1,7 +1,6 @@
 "use client";
 import { useQuery } from "@apollo/client";
 import { useEffect } from "react";
-import historyStore from "@/lib/stores/history.store";
 import { WATCH_QUERY } from "./queries/watch.query";
 import videoStore from "@/lib/stores/video.store";
 import { ISubtitle } from "@consumet/extensions";
@@ -17,8 +16,6 @@ export default function useWatchAnime(animeId: string, episodeId: string) {
 
    const { loading, data, error, refetch } = useQuery(WATCH_QUERY, {
       variables: { id: episodeId, animeId },
-      pollInterval: 5_000,
-      ssr: true,
    });
 
    useEffect(() => {

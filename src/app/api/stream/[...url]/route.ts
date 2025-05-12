@@ -1,5 +1,7 @@
-import { createHmac } from "crypto";
+import APIProvider from "@/lib/api/provider";
 import { NextRequest, NextResponse } from "next/server";
+
+const apiProvider = new APIProvider();
 
 export async function GET(
    req: NextRequest,
@@ -15,16 +17,15 @@ export async function GET(
       const animeId = req.headers.get("X-Anime-ID");
       const episodeId = req.headers.get("X-Episode-ID");
       const segment = url[url?.length - 1].replaceAll("/", "");
-      const filter = {
-         animeId,
-         episodeId,
-         segment,
-      };
 
       if (!paramsUrl || !animeId || !episodeId)
          throw new Error("Referer or URL is invalid");
 
-      const streamEps = await getFromDB(animeId, episodeId, segment);
+      const streamEps = await apiProvider.getFromDB(
+         animeId,
+         episodeId,
+         segment
+      );
 
       if (streamEps) {
          console.log("<< DB Hit >>");
@@ -60,7 +61,7 @@ export async function GET(
          headers: resHeaders,
       };
 
-      await saveToDB(streamData);
+      await apiProvider.saveToDB(streamData);
 
       if (res.headers.has("Expires"))
          resHeaders["Expires"] = res.headers.get("Expires")!;
@@ -79,94 +80,3 @@ export async function GET(
  * @todo Create API provider in library for better interface and separation for BE / Save operation
  * Notes: this can be done after moving subtitle save operation to BE
  */
-
-/**
- *
- * @param animeId anime ID from Zoro anime
- * @param episodeId episode ID from Zoro anime
- * @param segment segment pointer from m3u8 parameter
- * @returns stream data either saved or fetched from original source
- */
-async function getFromDB(
-   animeId: string,
-   episodeId: string,
-   segment: string
-) {
-   try {
-      const query = {
-         animeId,
-         episodeId,
-         segment,
-      };
-      const streamParams = new URLSearchParams(query);
-
-      const streamUrl = `${
-         process.env.BE_URL
-      }/api/v1/stream?${streamParams.toString()}`;
-      const key = `${query.animeId}:${query.episodeId}:${query.segment}`;
-
-      const headers = {
-         "X-Validation": getValidationHash(key),
-      };
-
-      const res = await fetch(streamUrl, { headers });
-      if (!res.ok) throw await res.text();
-      const eps = await res.json();
-
-      if (!eps?.data?.data) {
-         return;
-      }
-
-      eps.data.data = Buffer.from(eps.data.data, "base64");
-      return eps.data;
-   } catch (err) {
-      console.log("[Failed to get data]");
-      console.error(err);
-
-      return;
-   }
-}
-
-export interface IStreamData {
-   animeId: string;
-   episodeId: string;
-   segment: string;
-   data: string; // Buffer to base64
-   headers: Record<string, string>;
-}
-
-/**
- *
- * @param data stream data to save
- */
-async function saveToDB(data: IStreamData) {
-   try {
-      const body = JSON.stringify(data);
-      const key = `${data.animeId}:${data.episodeId}:${data.segment}:${data.data}`;
-      const headers = {
-         "X-Validation": getValidationHash(key),
-         "Content-Type": "application/json",
-      };
-
-      const res = await fetch(`${process.env.BE_URL}/api/v1/stream`, {
-         method: "POST",
-         body,
-         headers,
-      });
-
-      if (!res.ok) throw await res.text();
-   } catch (err) {
-      console.error(err);
-      console.log("[Failed to save stream]");
-   }
-}
-
-function getValidationHash(payload: string) {
-   const validation = createHmac(
-      process.env.SECRET_ALG!,
-      process.env.APP_SECRET!
-   );
-   validation.update(Buffer.from(payload));
-
-   return validation.digest().toString("base64url");
-}
