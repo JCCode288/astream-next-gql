@@ -11,7 +11,7 @@ const initialState: ILoadingData = {
    loading: false,
 };
 
-const loadingStore = create<ILoadingStore>()(
+const globalStore = create<ILoadingStore>()(
    persist(
       (set, get) => ({
          ...initialState,
@@ -21,10 +21,10 @@ const loadingStore = create<ILoadingStore>()(
          },
       }),
       {
-         name: "loading-store",
+         name: "global-store",
          storage: createJSONStorage(() => localStorage),
       }
    )
 );
 
-export default loadingStore;
+export default globalStore;

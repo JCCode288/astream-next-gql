@@ -1,4 +1,3 @@
-"use client";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { IAnimeData, IAnimeStore } from "./interfaces/anime.interfaces";
