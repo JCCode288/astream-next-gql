@@ -1,40 +1,31 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import { Play, Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { Star, ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import EpisodeCard from "@/components/details/episode-card";
 import SimilarAnimeCard from "@/components/details/similar-card";
-import { useParams } from "next/navigation";
 import useDetailAnime from "@/components/hooks/useDetail";
-import Loading from "./loading";
-import { useMemo } from "react";
-import BackHomeButton from "@/components/back-home-button";
+import BackButton from "@/components/back-home-button";
+import WatchButton from "@/components/details/watch-button";
 
-export default function AnimeDetailPage() {
+export default async function AnimeDetailPage({
+   params,
+}: {
+   params: Promise<{ id: string }>;
+}) {
    // In a real app, you would fetch the anime data based on the ID
-   const { id } = useParams();
+   const { id } = await params;
 
-   const { loading, error, detail } = useDetailAnime(id as string);
-
-   const firstEps = useMemo(() => {
-      if (!detail?.episodes?.length) return null;
-
-      const splitted = detail.episodes[0].id.split("$");
-      return splitted[splitted.length - 1];
-   }, [detail]);
-
-   if (loading) return <Loading />;
+   const { loading, error, detail } = await useDetailAnime(id as string);
 
    return (
       <div className="flex-1 flex flex-col min-h-screen bg-black text-white md:px-8 px-2 justify-center items-center">
          {/* Hero Section with Anime Cover */}
          <div className="relative">
             {/* Back Button */}
-            <BackHomeButton />
+            <BackButton />
 
             {/* Hero Container */}
             <div className="container relative z-10 grid grid-cols-1 md:grid-cols-[300px_1fr] gap-8 py-12">
@@ -51,17 +42,7 @@ export default function AnimeDetailPage() {
                      />
                   </div>
                   <div className="flex gap-2">
-                     {firstEps && (
-                        <Link
-                           href={`/anime/${id}/watch/${firstEps}`}
-                           className="flex-1 flex gap-2"
-                        >
-                           <Button className="bg-rose-500 hover:bg-rose-600 flex-1 cursor-pointer">
-                              <Play className="h-4 w-4" />
-                              Watch
-                           </Button>
-                        </Link>
-                     )}
+                     <WatchButton eps={detail?.episodes} id={id} />
                      {/* <Button
                         variant="outline"
                         size="icon"

@@ -24,7 +24,7 @@ const handler = startServerAndCreateNextHandler(server, {
          ip,
       });
 
-      if (!origin || !referer || !ip)
+      if (!origin || !ip)
          throw new ApolloError({
             networkError: new Error("cannot access"),
          });
@@ -34,20 +34,20 @@ const handler = startServerAndCreateNextHandler(server, {
             networkError: new Error("cannot access"),
          });
 
-      const refererURL = new URL(referer);
-      const originURL = new URL(origin);
+      // const refererURL = new URL(referer);
+      // const originURL = new URL(origin);
 
-      if (originURL.origin !== process.env.WHITELIST) {
-         throw new ApolloError({
-            networkError: new Error("cannot access"),
-         });
-      }
+      // if (originURL.origin !== process.env.WHITELIST) {
+      //    throw new ApolloError({
+      //       networkError: new Error("cannot access"),
+      //    });
+      // }
 
-      if (originURL.origin !== refererURL.origin) {
-         throw new ApolloError({
-            networkError: new Error("cannot access"),
-         });
-      }
+      // if (originURL.origin !== refererURL.origin) {
+      //    throw new ApolloError({
+      //       networkError: new Error("cannot access"),
+      //    });
+      // }
 
       provider = ProviderEnum.ZORO;
 
