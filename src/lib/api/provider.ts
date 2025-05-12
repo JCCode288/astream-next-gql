@@ -1,5 +1,8 @@
 import { createHmac } from "crypto";
-import { IStreamData } from "./api.interface";
+import { IStreamData, ISubsData, ISubsFilter } from "./api.interface";
+import client from "../database";
+import { headers } from "next/headers";
+import keyBuilder from "../utils.keybuilder";
 
 /**
  * @description interface provider for API data processing. this class method will call api and all error from API will be handled as not error here. this will separate API logic from this web app logic
@@ -18,7 +21,7 @@ export default class APIProvider {
     * @param segment segment pointer from m3u8 parameter
     * @returns stream data either saved or fetched from original source
     */
-   async getFromDB(animeId: string, episodeId: string, segment: string) {
+   async getStream(animeId: string, episodeId: string, segment: string) {
       try {
          const query = {
             animeId,
@@ -30,7 +33,7 @@ export default class APIProvider {
          const streamUrl = `${
             this.BASE_URL
          }/api/v1/stream?${streamParams.toString()}`;
-         const key = `${query.animeId}:${query.episodeId}:${query.segment}`;
+         const key = keyBuilder({ animeId, episodeId, segment });
 
          const headers = {
             "X-Validation": this.getValidationHash(key),
@@ -47,8 +50,8 @@ export default class APIProvider {
          eps.data.data = Buffer.from(eps.data.data, "base64");
          return eps.data;
       } catch (err) {
-         console.log("[Failed to get data]");
-         console.error(err);
+         // console.log("[Failed to get data]");
+         // console.error(err);s
 
          return;
       }
@@ -58,10 +61,16 @@ export default class APIProvider {
     *
     * @param data stream data to save
     */
-   async saveToDB(data: IStreamData) {
+   async saveStream(data: IStreamData) {
       try {
          const body = JSON.stringify(data);
-         const key = `${data.animeId}:${data.episodeId}:${data.segment}:${data.data}`;
+         const key = keyBuilder({
+            animeId: data.animeId,
+            episodeId: data.episodeId,
+            segment: data.segment,
+            data: data.data,
+         });
+
          const headers = {
             "X-Validation": this.getValidationHash(key),
             "Content-Type": "application/json",
@@ -74,6 +83,44 @@ export default class APIProvider {
          });
 
          if (!res.ok) throw await res.text();
+      } catch (err) {
+         // console.error(err);
+         // console.log("[Failed to save stream]");
+      }
+   }
+   async getSubs(filter: ISubsFilter): Promise<ISubsData | undefined> {
+      try {
+         const params = new URLSearchParams();
+         params.append("animeId", filter.animeId);
+         params.append("episodeId", filter.episodeId);
+
+         const key = keyBuilder({
+            animeId: filter.animeId,
+            episodeId: filter.episodeId,
+         });
+
+         const res = await fetch(
+            `${this.BASE_URL}/api/v1/stream/subs?${params.toString()}`,
+            {
+               headers: {
+                  "X-Validation": this.getValidationHash(key),
+               },
+            }
+         );
+
+         if (!res.ok) throw await res.text();
+         const { data } = await res.json();
+
+         return data;
+      } catch (err) {
+         console.log("[Failed to retrieve subtitle] ", err);
+         return;
+      }
+   }
+
+   async saveSubs(subsData: ISubsData) {
+      try {
+         const _ = await client.collection("subs").insertOne(subsData);
       } catch (err) {
          console.error(err);
          console.log("[Failed to save stream]");

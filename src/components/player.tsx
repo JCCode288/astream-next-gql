@@ -89,6 +89,7 @@ export default function Player({
 
    return (
       <div
+         id="artplayer-app"
          ref={streamDiv}
          className="artplayer-app relative my-8 aspect-video md:max-h-[60lvh] w-auto max-w-screen rounded-sm bg-primary-700 shadow-sm ring-2 ring-pink-800 ring-offset-pink-700 md:ring-offset-[0.5rem]"
       />
