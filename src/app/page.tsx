@@ -2,6 +2,10 @@ import useMainAnimes from "@/components/hooks/useAnimes";
 import MainHero from "@/components/main/main-hero";
 import MainTabs from "@/components/main/main-tabs";
 
+// these configs was needed to force page to be dynamically loaded for gql
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function HomePage() {
    const { error, animes } = await useMainAnimes();
 

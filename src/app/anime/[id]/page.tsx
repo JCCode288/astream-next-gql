@@ -15,7 +15,6 @@ export default async function AnimeDetailPage({
 }: {
    params: Promise<{ id: string }>;
 }) {
-   // In a real app, you would fetch the anime data based on the ID
    const { id } = await params;
 
    const { loading, error, detail } = await useDetailAnime(id as string);
