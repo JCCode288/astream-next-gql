@@ -122,7 +122,7 @@ const dataTypeDefs = gql`
    type User {
       name: String!
       email: String
-      clientId: String!
+      clientId: [String]!
       userId: String
       canComment: Boolean!
       config: UserConfig
