@@ -4,22 +4,37 @@ import {
    ProviderEnum,
 } from "@/lib/anime-provider/provider.interfaces";
 import {
+   IAnimeEpisode,
    IAnimeInfo,
    IAnimeResult,
    ISearch,
-   ISource,
 } from "@consumet/extensions";
 
+export interface IWatchEpisodes {
+   episode?: IAnimeEpisode;
+   timestamp: number;
+   duration: number;
+}
+
+export type CurrentWatch = IWatchEpisodes & {
+   animeId: string;
+   aniName: string;
+};
+
+export interface IWatchList {
+   animeId: string;
+   aniName: string;
+   episodes: IWatchEpisodes[];
+}
+
 export interface IHistoryData {
-   watch_list: ISource[];
-   recent: ISource | null;
-   current: ISource | null;
+   watch_list: IWatchList[];
+   current: CurrentWatch | null;
 }
 
 export interface IHistoryStore extends IHistoryData {
-   addToWatchList(anime: ISource): void;
-   setRecent(anime: ISource): void;
-   setCurrent(source: ISource | null): void;
+   addToWatchList(anime: IWatchList): void;
+   setCurrent(source: CurrentWatch): void;
 }
 
 export interface IAnimeData extends IZoroPagination {

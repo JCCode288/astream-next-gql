@@ -34,7 +34,8 @@ export default class ZoroProvider
             popular_page = 1,
          }: IZoroPagination = page;
 
-         const recent_prom = this.provider.fetchRecentlyAdded(recent_page);
+         const recent_prom =
+            this.provider.fetchRecentlyUpdated(recent_page);
          const top_prom = this.provider.fetchTopAiring(top_page);
          const movie_prom = this.provider.fetchMovie(movie_page);
          const popular_prom = this.provider.fetchMostPopular(popular_page);
@@ -76,6 +77,7 @@ export default class ZoroProvider
          StreamingServers.VidCloud
       );
    }
+
    search(query: string, page = 1) {
       return this.provider.search(query, page);
    }

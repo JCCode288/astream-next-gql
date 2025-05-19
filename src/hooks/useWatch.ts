@@ -3,7 +3,7 @@ import { useQuery } from "@apollo/client";
 import { useEffect } from "react";
 import { WATCH_QUERY } from "./queries/watch.query";
 import videoStore from "@/lib/stores/video.store";
-import { ISubtitle } from "@consumet/extensions";
+import { IAnimeInfo, ISubtitle } from "@consumet/extensions";
 
 export default function useWatchAnime(animeId: string, episodeId: string) {
    const watch = videoStore().currentSource;
@@ -12,6 +12,8 @@ export default function useWatchAnime(animeId: string, episodeId: string) {
    const setQualities = videoStore().setQualities;
    const setCurrentSubs = videoStore().setCurrentSubs;
    const setHeaders = videoStore().setHeaders;
+   const setIntro = videoStore().setIntro;
+   const setOutro = videoStore().setOutro;
    const resetState = videoStore().reset;
 
    const { loading, data, error, refetch } = useQuery(WATCH_QUERY, {
@@ -45,6 +47,12 @@ export default function useWatchAnime(animeId: string, episodeId: string) {
       const qualities = data.watch?.quality;
       setQualities(qualities ?? []);
 
+      const intro = data.watch?.intro;
+      setIntro(intro);
+
+      const outro = data.watch?.outro;
+      setOutro(outro);
+
       if (!subs) return;
 
       const currentSubs =
@@ -52,5 +60,5 @@ export default function useWatchAnime(animeId: string, episodeId: string) {
       setCurrentSubs(currentSubs);
    }, [data]);
 
-   return { loading, watch, anime: data?.detail, error };
+   return { loading, watch, anime: data?.detail as IAnimeInfo, error };
 }

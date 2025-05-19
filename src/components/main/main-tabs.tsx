@@ -57,7 +57,7 @@ export default function MainTabs({ animes, loading, error }: any) {
             }
          })
       );
-   }, [animes.keys]);
+   }, [animes]);
 
    if (loading) return <Loading />;
 

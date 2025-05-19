@@ -1,17 +1,14 @@
 import hlsBuilder from "@/lib/hls.builder";
-import playerConfig from "@/lib/player.config";
+import customAutoPlayback from "@/lib/player/playback.plugin";
+import playerConfig from "@/lib/player/player.config";
+import historyStore from "@/lib/stores/history.store";
+import { IPlayerProps } from "@/lib/stores/interfaces/vid-player.interfaces";
 import videoStore from "@/lib/stores/video.store";
 import Artplayer from "artplayer";
 import Hls from "hls.js";
 import { useEffect, useRef, useState } from "react";
 
-export default function Player({
-   animeId,
-   epsId,
-}: {
-   animeId?: string;
-   epsId?: string;
-}) {
+export default function Player({ animeId, epsId, save }: IPlayerProps) {
    const [art, setArt] = useState<Artplayer>();
    const [hlsInst, setHls] = useState<Hls>();
 
@@ -20,6 +17,9 @@ export default function Player({
    const qualities = videoStore().qualities;
    const currentSubs = videoStore().currentSubs;
    const referer = videoStore().headers?.Referer;
+   const intro = videoStore().intro;
+   const outro = videoStore().outro;
+   const current = historyStore().current;
 
    useEffect(() => {
       if (!art) return;
@@ -40,7 +40,6 @@ export default function Player({
       });
 
       return () => {
-         alert("CLEAN UP TRIGGERED");
          if (art) {
             art?.destroy(true);
             art?.hls?.destroy();
@@ -68,10 +67,19 @@ export default function Player({
          currentSubs: currentSubs?.url,
          div: streamDiv.current,
          hls,
+         intro,
+         outro,
       });
 
       Artplayer.MOBILE_CLICK_PLAY = true;
       const artPlayer = new Artplayer(config);
+
+      artPlayer.plugins.add(
+         customAutoPlayback({
+            save,
+            current: current ?? {},
+         })
+      );
 
       setHls(() => hls);
       setArt(() => artPlayer);
