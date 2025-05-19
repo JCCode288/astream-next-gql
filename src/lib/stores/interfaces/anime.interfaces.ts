@@ -29,12 +29,11 @@ export interface IWatchList {
 
 export interface IHistoryData {
    watch_list: IWatchList[];
-   current: CurrentWatch | null;
 }
 
 export interface IHistoryStore extends IHistoryData {
-   addToWatchList(anime: IWatchList): void;
-   setCurrent(source: CurrentWatch): void;
+   getCurrent(animeId: string, episodeId: string): CurrentWatch | null;
+   addToWatchList(source: CurrentWatch): void;
 }
 
 export interface IAnimeData extends IZoroPagination {

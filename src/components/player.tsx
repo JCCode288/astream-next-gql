@@ -19,7 +19,7 @@ export default function Player({ animeId, epsId, save }: IPlayerProps) {
    const referer = videoStore().headers?.Referer;
    const intro = videoStore().intro;
    const outro = videoStore().outro;
-   const current = historyStore().current;
+   const getCurrent = historyStore().getCurrent;
 
    useEffect(() => {
       if (!art) return;
@@ -73,6 +73,8 @@ export default function Player({ animeId, epsId, save }: IPlayerProps) {
 
       Artplayer.MOBILE_CLICK_PLAY = true;
       const artPlayer = new Artplayer(config);
+      const current = getCurrent(animeId, epsId);
+      console.log(current);
 
       artPlayer.plugins.add(
          customAutoPlayback({
