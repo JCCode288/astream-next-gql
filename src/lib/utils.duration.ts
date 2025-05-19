@@ -32,12 +32,11 @@ export function durationToNumber(duration: string) {
    return totalDuration;
 }
 
-export function numberToDuration(number: number) {
+export function numberToHourMin(number: number) {
    let hour = Math.floor(number / type.h);
    let min = number / type.m;
 
    if (hour < 1) return `${min}m`;
-
    if (hour * 60 === min) return `${hour}h`;
 
    hour = hour;
@@ -46,6 +45,6 @@ export function numberToDuration(number: number) {
    return `${hour}h ${min}m`;
 }
 
-export function durationToDuration(duration: string) {
-   return numberToDuration(durationToNumber(duration));
+export function durationToHourMin(duration: string) {
+   return numberToHourMin(durationToNumber(duration));
 }

@@ -8,9 +8,9 @@ import { onError } from "@apollo/client/link/error";
 import authStore from "@/lib/stores/auth.store";
 import animeStore from "@/lib/stores/animes.store";
 
-function buildLink(uri: string) {
-   const BASE_URL = process.env.BASE_URL;
-   uri = `${BASE_URL}${uri}`;
+function buildLink(uri: string, BASE_URL = process.env.BASE_URL) {
+   if (BASE_URL) uri = `${BASE_URL}${uri}`;
+
    const baseLink = createHttpLink({
       uri,
    });
@@ -18,14 +18,16 @@ function buildLink(uri: string) {
       const token = authStore.getState().token;
       const provider = animeStore.getState().provider;
       const headers = context.headers;
+      const cookies = context.cookies;
+
       // console.log(context, "[Request Headers]");
 
       return {
          headers: {
+            origin: BASE_URL,
             ...headers,
             authorization: token ? `Bearer ${token}` : null,
             "x-ani-provider": provider,
-            origin: BASE_URL,
          },
       };
    });
@@ -54,7 +56,6 @@ export function createClient() {
    return new ApolloClient({
       ssrMode: typeof window === "undefined",
       cache: new InMemoryCache(),
-      credentials: "same-site",
       link: buildLink("/api/graphql"),
    });
 }

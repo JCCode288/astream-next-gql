@@ -1,5 +1,5 @@
 "use client";
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { useEffect } from "react";
 import animeStore from "@/lib/stores/animes.store";
 import { SEARCH_QUERY } from "./queries/search.query";

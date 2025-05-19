@@ -11,6 +11,7 @@ import {
    IVariableUser,
 } from "./interfaces/context.interface";
 import { IAnimeResult, ISearch } from "@consumet/extensions";
+import APIProvider from "@/lib/api/provider";
 
 export type MainPagination = { page?: number } & IZoroPagination;
 
@@ -20,6 +21,8 @@ const providers = {
    [ProviderEnum.ANIDRV]: new AniDriveProvider(),
    [ProviderEnum.ZORO]: new ZoroProvider(),
 };
+
+const apiProvider = new APIProvider();
 
 /**
  * @todo move API provider operation to this layer
@@ -36,11 +39,8 @@ const resolvers = {
             const page = getPagination(pagination, ProviderEnum.ZORO);
 
             if (!page) throw new Error("invalid pagination");
-            console.log("[page] ", page);
 
             const data = await aniProvider.getMainPage(page);
-
-            console.log("[Animes] ", data);
 
             return data;
          } catch (err) {
@@ -56,9 +56,18 @@ const resolvers = {
          { provider }: IContextBody
       ) => {
          try {
-            const aniProvider = getProvider(provider);
+            let detail = await apiProvider.getAnime(id);
+            if (detail && detail.status === "Completed") {
+               detail.id = detail.animeId;
+               return detail;
+            }
 
-            return await aniProvider.getDetail(id);
+            const aniProvider = getProvider(provider);
+            detail = await aniProvider.getDetail(id);
+
+            await apiProvider.saveAnime(detail);
+
+            return detail;
          } catch (err) {
             console.log(err);
             throw err;
@@ -75,9 +84,10 @@ const resolvers = {
 
             const [animeId, episodeId] = id.split("$episode$");
 
-            console.log({ animeId, episodeId });
+            let watch = await apiProvider.getSources(animeId, episodeId);
+            if (watch) return watch;
 
-            const watch = await aniProvider.watch(id);
+            watch = await aniProvider.watch(id);
             const params = new URLSearchParams();
             if (watch.headers?.Referer)
                params.append("ref", watch.headers.Referer);
@@ -97,7 +107,8 @@ const resolvers = {
                return sub;
             });
 
-            console.log(watch, "[Watch Data]");
+            await apiProvider.saveSources(animeId, episodeId, watch);
+
             return watch;
          } catch (err) {
             console.log(err);
@@ -107,8 +118,8 @@ const resolvers = {
 
       user: async (
          _: unknown,
-         { userId, browserId }: IVariableUser,
-         { ip }: IContextBody
+         { userId }: IVariableUser,
+         { clientId }: IContextBody
       ) => {},
    },
    Mutation: {
@@ -130,7 +141,6 @@ const resolvers = {
          const aniProvider = getProvider(provider);
 
          const search = await aniProvider.search(query, page);
-         console.log(search, "[Search Data]");
          return search;
       },
 

@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import Image from "next/image";
 import { Star, ChevronRight } from "lucide-react";
@@ -6,18 +7,17 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import EpisodeCard from "@/components/details/episode-card";
 import SimilarAnimeCard from "@/components/details/similar-card";
-import useDetailAnime from "@/components/hooks/useDetail";
+import useDetailAnime from "@/hooks/useDetail";
 import BackButton from "@/components/back-home-button";
 import WatchButton from "@/components/details/watch-button";
+import { useParams } from "next/navigation";
+import Loading from "./loading";
 
-export default async function AnimeDetailPage({
-   params,
-}: {
-   params: Promise<{ id: string }>;
-}) {
-   const { id } = await params;
+export default function AnimeDetailPage() {
+   const { id } = useParams();
+   const { detail, loading, error } = useDetailAnime(id as string);
 
-   const { loading, error, detail } = await useDetailAnime(id as string);
+   if (loading) return <Loading />;
 
    return (
       <div className="flex-1 flex flex-col min-h-screen bg-black text-white md:px-8 px-2 justify-center items-center">
@@ -31,14 +31,16 @@ export default async function AnimeDetailPage({
                {/* Anime Poster */}
                <div className="flex flex-col gap-4">
                   <div className="flex relative aspect-[2/3] overflow-hidden rounded-lg border-2 border-zinc-800 shadow-xl max-h-[50lvh] w-auto">
-                     <Image
-                        src={detail?.cover ?? detail?.image!}
-                        alt={detail?.id + "-poster"}
-                        className="object-cover"
-                        fill
-                        // height={450}
-                        // width={300}
-                     />
+                     {(detail?.cover || detail?.image) && (
+                        <Image
+                           src={detail?.cover ?? detail?.image!}
+                           alt={detail?.id + "-poster"}
+                           className="object-cover"
+                           fill
+                           // height={450}
+                           // width={300}
+                        />
+                     )}
                   </div>
                   <div className="flex gap-2">
                      <WatchButton eps={detail?.episodes} id={id} />
@@ -220,11 +222,13 @@ export default async function AnimeDetailPage({
                   </div>
                )}
             </div>
+            {/* Handle Episode pagination */}
             <div className="grid gap-4">
                {detail?.episodes?.map((eps, i) => {
                   if (detail.episodes && i === detail.episodes.length - 1)
                      return (
                         <EpisodeCard
+                           animeId={id as string}
                            key={`episode-${i}`}
                            episode={eps}
                            latest
@@ -234,6 +238,7 @@ export default async function AnimeDetailPage({
 
                   return (
                      <EpisodeCard
+                        animeId={id as string}
                         key={`episode-${i}`}
                         episode={eps}
                         latest={false}

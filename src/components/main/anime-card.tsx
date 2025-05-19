@@ -4,11 +4,7 @@ import Link from "next/link";
 import { Card, CardContent } from "../ui/card";
 import Image from "next/image";
 import { IAnimeResult } from "@consumet/extensions";
-import {
-   durationToDuration,
-   durationToNumber,
-   numberToDuration,
-} from "@/lib/utils.duration";
+import { durationToHourMin } from "@/lib/utils.duration";
 
 export default function AnimeCard({ anime }: { anime: IAnimeResult }) {
    const { cover, title, id, image, releaseDate, duration } = anime;
@@ -21,6 +17,7 @@ export default function AnimeCard({ anime }: { anime: IAnimeResult }) {
                   src={cover ?? image!}
                   alt={title as string}
                   className="object-cover transition-transform group-hover:scale-105"
+                  loading="eager"
                   height={450}
                   width={300}
                />
@@ -33,7 +30,7 @@ export default function AnimeCard({ anime }: { anime: IAnimeResult }) {
                   <span>{releaseDate}</span>
                </div>
                <div className="flex items-center justify-between mt-1 text-xs text-zinc-400">
-                  <span>{durationToDuration(duration)}</span>
+                  <span>{durationToHourMin(duration)}</span>
                </div>
             </CardContent>
          </Card>

@@ -72,6 +72,10 @@ export default function playerConfig({
       quality: qualities,
    } as Option;
 
+   if (!currentSubs) {
+      return opts;
+   }
+
    opts.subtitle = {
       url: currentSubs,
       type: "vtt",

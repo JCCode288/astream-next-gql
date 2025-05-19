@@ -1,6 +1,7 @@
 import { createHmac } from "crypto";
 import { IStreamData, ISubsData, ISubsFilter } from "./api.interface";
 import keyBuilder from "../utils.keybuilder";
+import { IAnimeInfo, ISource } from "@consumet/extensions";
 
 /**
  * @description interface provider for API data processing. this class method will call api and all error from API will be handled as not error here. this will separate API logic from this web app logic
@@ -138,6 +139,116 @@ export default class APIProvider {
       } catch (err) {
          console.error(err);
          console.log("[Failed to save subs]");
+      }
+   }
+
+   async getSources(
+      animeId: string,
+      episodeId: string
+   ): Promise<ISource | void> {
+      try {
+         const identifier = { animeId, episodeId };
+         const params = new URLSearchParams(identifier);
+         const key = keyBuilder(identifier);
+         const headers = {
+            "X-Validation": this.getValidationHash(key),
+         };
+
+         const res = await fetch(
+            `${this.BASE_URL}/api/v1/stream/sources?${params.toString()}`,
+            {
+               headers,
+            }
+         );
+         if (!res.ok) throw await res.text();
+
+         const { data } = await res.json();
+
+         return data;
+      } catch (err) {
+         console.error(err);
+         console.log("[Failed to get source data]");
+      }
+   }
+
+   async saveSources(
+      animeId: string,
+      episodeId: string,
+      sourceData: ISource
+   ) {
+      try {
+         const identifier = { episodeId, animeId };
+         const key = keyBuilder(identifier);
+         const payload = { ...identifier, ...sourceData };
+         const headers = {
+            "X-Validation": this.getValidationHash(key),
+            "Content-Type": "application/json",
+         };
+
+         const res = await fetch(
+            `${this.BASE_URL}/api/v1/stream/sources`,
+            {
+               method: "POST",
+               headers,
+               body: JSON.stringify(payload),
+            }
+         );
+
+         if (!res.ok) throw await res.text();
+      } catch (err) {
+         console.error(err);
+         console.log("[Failed to save source data]");
+      }
+   }
+
+   async getAnime(animeId: string) {
+      try {
+         const identifier = { animeId };
+         const key = keyBuilder(identifier);
+         const headers = {
+            "X-Validation": this.getValidationHash(key),
+         };
+
+         const res = await fetch(
+            `${this.BASE_URL}/api/v1/animes/${animeId}`,
+            { headers }
+         );
+         if (!res.ok) throw await res.text();
+
+         const { data } = await res.json();
+
+         return data;
+      } catch (err) {
+         console.error(err);
+         console.log("[Failed to get anime data]");
+      }
+   }
+   async saveAnime(animeData: IAnimeInfo) {
+      try {
+         const identifier = { animeId: animeData.id };
+         const key = keyBuilder(identifier);
+         const headers = {
+            "X-Validation": this.getValidationHash(key),
+            "Content-Type": "application/json",
+         };
+
+         // id in this entity converted into animeID for sign validation
+         const payload: Record<string, any> = {
+            ...identifier,
+            ...animeData,
+         };
+
+         delete payload.id;
+
+         const res = await fetch(`${this.BASE_URL}/api/v1/animes`, {
+            method: "POST",
+            headers,
+            body: JSON.stringify(payload),
+         });
+         if (!res.ok) throw await res.text();
+      } catch (err) {
+         console.error(err);
+         console.log("[Failed to save anime data]");
       }
    }
 

@@ -4,7 +4,7 @@ import "./globals.css";
 import MainProvider from "@/components/providers/main-provider";
 import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
-import animeStore from "@/lib/stores/animes.store";
+import { Suspense } from "react";
 
 const geistSans = Geist({
    variable: "--font-geist-sans",
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
    description: "Anime Streaming Online, watch and stream anime free.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
    children,
 }: Readonly<{
    children: React.ReactNode;
@@ -31,11 +31,13 @@ export default function RootLayout({
          <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased flex min-h-screen max-w-screen overflow-x-hidden`}
          >
-            <MainProvider>
-               <Navbar />
-               {children}
-               <Footer />
-            </MainProvider>
+            <Suspense>
+               <MainProvider>
+                  <Navbar />
+                  {children}
+                  <Footer />
+               </MainProvider>
+            </Suspense>
          </body>
       </html>
    );
