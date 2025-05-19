@@ -5,68 +5,105 @@ import {
    CurrentWatch,
    IHistoryData,
    IHistoryStore,
+   IWatchEpisodes,
    IWatchList,
 } from "./interfaces/anime.interfaces";
 
 const initialData: IHistoryData = {
    watch_list: [],
-   current: null,
 };
 
 const historyStore = create<IHistoryStore>()(
    persist(
       (set, get) => ({
          ...initialData,
-         addToWatchList(source: IWatchList) {
-            set((state) => {
-               state.watch_list.push(source);
-               return { ...state };
-            });
-         },
-         setCurrent(currentWatch) {
+         getCurrent(animeId, episodeId) {
             const watchlist = get().watch_list;
-            let current: CurrentWatch | undefined;
-            let aniFlag = false;
 
             for (const wl of watchlist) {
+               if (wl.animeId !== animeId) continue;
+
+               for (const eps of wl.episodes) {
+                  const id = `${animeId}$episode$${episodeId}`;
+                  if (eps?.episode?.id !== id) continue;
+
+                  return {
+                     animeId: animeId,
+                     aniName: wl.aniName,
+                     ...eps,
+                  };
+               }
+            }
+
+            return null;
+         },
+         addToWatchList(currentWatch) {
+            const watchlist = get().watch_list;
+            let anidex: number = -1;
+            let epsFlag = false;
+
+            for (let i = 0; i < watchlist.length; i++) {
+               const wl = watchlist[i];
+
                if (wl.animeId !== currentWatch.animeId) continue;
-               aniFlag = true;
-               let flag = false;
+
+               anidex = i;
 
                for (const eps of wl.episodes) {
                   if (eps.episode?.id !== currentWatch.episode?.id)
                      continue;
 
-                  flag = true;
+                  epsFlag = true;
 
                   eps.timestamp = currentWatch.timestamp;
                   eps.duration = currentWatch.duration;
-                  eps.episode = currentWatch.episode;
-
-                  current = {
-                     animeId: currentWatch.aniName,
-                     aniName: currentWatch.aniName,
-                     episode: currentWatch.episode,
-                     timestamp: currentWatch.timestamp,
-                     duration: currentWatch.duration,
-                  };
 
                   break;
                }
 
-               if (flag) break;
+               if (epsFlag) break;
+
+               wl.episodes.push({
+                  episode: currentWatch.episode,
+                  timestamp: currentWatch.timestamp,
+                  duration: currentWatch.duration,
+               });
             }
 
-            if (!current) current = currentWatch;
+            if (anidex >= 0 && epsFlag) {
+               set((state) => ({ ...state, watch_list: watchlist }));
+               return;
+            }
 
-            if (!aniFlag)
-               watchlist.push({
-                  animeId: current.animeId,
-                  aniName: current.aniName,
-                  episodes: [current],
+            if (anidex >= 0 && !epsFlag) {
+               watchlist[anidex].episodes.push({
+                  episode: currentWatch.episode,
+                  timestamp: currentWatch.timestamp,
+                  duration: currentWatch.duration,
                });
 
-            set((state) => ({ ...state, current, watch_list: watchlist }));
+               set((state) => ({ ...state, watch_list: watchlist }));
+               return;
+            }
+
+            const { animeId, aniName, episode, timestamp, duration } =
+               currentWatch;
+
+            const watchdata = {
+               animeId,
+               aniName,
+               episodes: [
+                  {
+                     episode,
+                     timestamp,
+                     duration,
+                  },
+               ],
+            };
+
+            watchlist.push(watchdata);
+
+            set((state) => ({ ...state, watch_list: watchlist }));
          },
       }),
       {
