@@ -1,4 +1,6 @@
-import { ISubtitle, IVideo } from "@consumet/extensions";
+import { SavePlayback } from "@/lib/player/playback.plugin";
+import { Intro, ISubtitle, IVideo } from "@consumet/extensions";
+import { ComponentOption } from "artplayer/types/component";
 import Hls from "hls.js";
 
 export interface IVideoQuality {
@@ -14,6 +16,15 @@ export interface IGenerateOpts {
    qualities: IVideoQuality[];
    currentSubs?: string;
    div?: HTMLDivElement;
+   intro?: Intro;
+   outro?: Intro;
+   controls?: ComponentOption[];
+}
+
+export interface IPlayerProps {
+   animeId: string;
+   epsId: string;
+   save: (data: SavePlayback) => void;
 }
 
 export interface IPlayerData {
@@ -22,6 +33,8 @@ export interface IPlayerData {
    qualities: IVideoQuality[];
    currentSubs: ISubtitle | null;
    subs: ISubtitle[];
+   intro?: Intro;
+   outro?: Intro;
 }
 
 export interface IPlayerStore extends IPlayerData {
@@ -30,5 +43,7 @@ export interface IPlayerStore extends IPlayerData {
    setQualities(qualities: IVideoQuality[]): void;
    setCurrentSubs(lang: ISubtitle): void;
    setSubs(subs: ISubtitle[]): void;
+   setIntro(intro: Intro): void;
+   setOutro(outro: Intro): void;
    reset(): void;
 }

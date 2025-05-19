@@ -12,9 +12,11 @@ import { useParams } from "next/navigation";
 import useWatchAnime from "@/hooks/useWatch";
 import Loading from "./loading";
 import { Badge } from "@/components/ui/badge";
-import { IAnimeResult } from "@consumet/extensions";
+import { IAnimeEpisode } from "@consumet/extensions";
 import Player from "@/components/player";
 import PreviousButton from "@/components/back-home-button";
+import { SavePlayback } from "@/lib/player/playback.plugin";
+import historyStore from "@/lib/stores/history.store";
 
 export default function WatchPage() {
    const { id: animeId, epsId: episodeId } = useParams();
@@ -25,22 +27,43 @@ export default function WatchPage() {
    );
 
    const {
-      watch: episode,
       loading,
-      error,
       anime,
+      watch: episode,
    } = useWatchAnime(animeId as string, id);
 
+   const setCurrent = historyStore().setCurrent;
+
+   const currentEpisode = useMemo(() => {
+      return anime?.episodes?.find((ani: IAnimeEpisode) => ani.id === id);
+   }, [episode, anime]);
+
    if (loading || !anime || !animeId || !episodeId) return <Loading />;
+
+   const saveHist = (data: SavePlayback) => {
+      // @notes - saving it to store for later implementation of load and save on app initialization
+
+      setCurrent({
+         animeId: anime.id,
+         aniName: anime.title.toString(),
+         episode: currentEpisode,
+         timestamp: data.timestamp,
+         duration: data.duration,
+      });
+   };
 
    return (
       <div className="min-h-screen bg-black text-white flex flex-col">
          {/* Video Player Container */}
          <PreviousButton />
+         <div>
+            <h1>{anime.title.toString()}</h1>
+         </div>
          <Player
             epsId={episodeId?.toString()}
             animeId={animeId?.toString()}
             key={`${episodeId?.toString()}-${animeId?.toString()}`}
+            save={saveHist}
          />
 
          {/* Episode Information Section */}
@@ -96,8 +119,9 @@ export default function WatchPage() {
 
                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                   {/* Handle Episode pagination */}
-                  {anime.episodes.map((eps: IAnimeResult) => {
-                     const isCurrentEpisode = eps.id === id;
+                  {anime.episodes?.map((eps: IAnimeEpisode) => {
+                     const isCurrentEpisode =
+                        eps.id === currentEpisode?.id;
 
                      const splitted = eps.id.split("$");
                      const epId = splitted[splitted.length - 1];

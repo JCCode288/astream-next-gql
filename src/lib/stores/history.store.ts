@@ -2,14 +2,14 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import {
+   CurrentWatch,
    IHistoryData,
    IHistoryStore,
+   IWatchList,
 } from "./interfaces/anime.interfaces";
-import { ISource } from "@consumet/extensions";
 
 const initialData: IHistoryData = {
    watch_list: [],
-   recent: null,
    current: null,
 };
 
@@ -17,17 +17,56 @@ const historyStore = create<IHistoryStore>()(
    persist(
       (set, get) => ({
          ...initialData,
-         addToWatchList(source: ISource) {
+         addToWatchList(source: IWatchList) {
             set((state) => {
                state.watch_list.push(source);
                return { ...state };
             });
          },
-         setRecent(anime) {
-            set((state) => ({ ...state, recent: anime }));
-         },
-         setCurrent(source) {
-            set((state) => ({ ...state, current: source }));
+         setCurrent(currentWatch) {
+            const watchlist = get().watch_list;
+            let current: CurrentWatch | undefined;
+            let aniFlag = false;
+
+            for (const wl of watchlist) {
+               if (wl.animeId !== currentWatch.animeId) continue;
+               aniFlag = true;
+               let flag = false;
+
+               for (const eps of wl.episodes) {
+                  if (eps.episode?.id !== currentWatch.episode?.id)
+                     continue;
+
+                  flag = true;
+
+                  eps.timestamp = currentWatch.timestamp;
+                  eps.duration = currentWatch.duration;
+                  eps.episode = currentWatch.episode;
+
+                  current = {
+                     animeId: currentWatch.aniName,
+                     aniName: currentWatch.aniName,
+                     episode: currentWatch.episode,
+                     timestamp: currentWatch.timestamp,
+                     duration: currentWatch.duration,
+                  };
+
+                  break;
+               }
+
+               if (flag) break;
+            }
+
+            if (!current) current = currentWatch;
+
+            if (!aniFlag)
+               watchlist.push({
+                  animeId: current.animeId,
+                  aniName: current.aniName,
+                  episodes: [current],
+               });
+
+            set((state) => ({ ...state, current, watch_list: watchlist }));
          },
       }),
       {

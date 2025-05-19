@@ -2,7 +2,11 @@
 
 import type Option from "artplayer/types/option";
 import Hls from "hls.js";
-import { IGenerateOpts } from "./stores/interfaces/vid-player.interfaces";
+import { IGenerateOpts } from "../stores/interfaces/vid-player.interfaces";
+import ArtplayerChapter from "artplayer-plugin-chapter";
+import Artplayer from "artplayer";
+import ArtplayerThumbnailPlugin from "artplayer-plugin-auto-thumbnail";
+import skipPlugin from "./skip.plugin";
 
 export default function playerConfig({
    currentSource,
@@ -10,6 +14,8 @@ export default function playerConfig({
    currentSubs,
    hls,
    div,
+   intro,
+   outro,
 }: IGenerateOpts) {
    const opts: Option = {
       container: div ?? "#artplayer-app",
@@ -45,11 +51,13 @@ export default function playerConfig({
       autoSize: false,
       autoMini: false,
       screenshot: true,
+      fastForward: true,
       setting: true,
       loop: false,
       flip: true,
       playbackRate: true,
       aspectRatio: true,
+      plugins: [skipPlugin, ArtplayerThumbnailPlugin({})],
       fullscreen: true,
       fullscreenWeb: false,
       subtitleOffset: false,
@@ -57,20 +65,30 @@ export default function playerConfig({
       mutex: true,
       backdrop: true,
       playsInline: true,
-      autoPlayback: true,
       airplay: true,
       theme: "#77CF6D",
-      whitelist: ["*"],
-      moreVideoAttr: {
-         crossOrigin: "anonymous",
-      },
-      thumbnails: {
-         url: "",
-         number: 60,
-         column: 10,
-      },
       quality: qualities,
    } as Option;
+
+   const chapters = [];
+
+   if (intro)
+      chapters.push({
+         start: intro.start,
+         end: intro.end,
+         title: "intro",
+      });
+
+   if (outro)
+      chapters.push({
+         start: outro.start,
+         end: outro.end,
+         title: "outro",
+      });
+
+   if (chapters.length) {
+      opts.plugins?.push(ArtplayerChapter({ chapters }));
+   }
 
    if (!currentSubs) {
       return opts;
