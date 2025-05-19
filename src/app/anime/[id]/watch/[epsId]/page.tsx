@@ -21,10 +21,7 @@ import historyStore from "@/lib/stores/history.store";
 export default function WatchPage() {
    const { id: animeId, epsId: episodeId } = useParams();
 
-   const id = useMemo(
-      () => `${animeId}$episode$${episodeId}`,
-      [animeId, episodeId]
-   );
+   const id = `${animeId}$episode$${episodeId}`;
 
    const {
       loading,
@@ -32,7 +29,7 @@ export default function WatchPage() {
       watch: episode,
    } = useWatchAnime(animeId as string, id);
 
-   const setCurrent = historyStore().setCurrent;
+   const addToWatchList = historyStore().addToWatchList;
 
    const currentEpisode = useMemo(() => {
       return anime?.episodes?.find((ani: IAnimeEpisode) => ani.id === id);
@@ -43,7 +40,7 @@ export default function WatchPage() {
    const saveHist = (data: SavePlayback) => {
       // @notes - saving it to store for later implementation of load and save on app initialization
 
-      setCurrent({
+      addToWatchList({
          animeId: anime.id,
          aniName: anime.title.toString(),
          episode: currentEpisode,
