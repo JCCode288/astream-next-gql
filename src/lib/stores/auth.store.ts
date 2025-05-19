@@ -10,7 +10,7 @@ import { FirebaseApp } from "firebase/app";
 import firebaseStore from "./firebase.store";
 
 const initialData: IAuthData = {
-   browserId: null,
+   clientId: null,
    userId: null,
    token: null,
    isLoggedIn: false,

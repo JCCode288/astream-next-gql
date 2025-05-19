@@ -10,22 +10,23 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 
 export default function EpisodeCard({
+   animeId,
    episode,
    latest,
    watched,
 }: {
+   animeId: string;
    episode: IAnimeEpisode;
    latest: boolean;
    watched: boolean;
 }) {
-   const { id } = useParams();
    const splitted = episode.id.split("$");
    const epsId = splitted.length
       ? splitted[splitted.length - 1]
       : episode.id;
 
    return (
-      <Link href={id + "/watch/" + epsId}>
+      <Link href={animeId + "/watch/" + epsId}>
          <Card className="bg-zinc-900 border-zinc-800 overflow-hidden hover:border-zinc-700 transition-colors text-zinc-400 cursor-pointer">
             <div className="flex flex-col sm:flex-row">
                <div className="relative sm:w-48 aspect-video">

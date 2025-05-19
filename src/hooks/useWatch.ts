@@ -35,17 +35,21 @@ export default function useWatchAnime(animeId: string, episodeId: string) {
 
       const headers = data.watch.headers;
       setHeaders(headers);
+
       const sources = data.watch.sources[0];
       setSources(sources);
+
       const subs = data.watch.subtitles;
       setSubs(subs ?? []);
+
       const qualities = data.watch?.quality;
       setQualities(qualities ?? []);
-      const currentSubs =
-         subs.find((sub: ISubtitle) => sub.lang === "English") ?? subs[0];
-      setCurrentSubs(currentSubs);
 
-      // console.log({ sources, subs, qualities, currentSubs });
+      if (!subs) return;
+
+      const currentSubs =
+         subs?.find((sub: ISubtitle) => sub.lang === "English") ?? subs[0];
+      setCurrentSubs(currentSubs);
    }, [data]);
 
    return { loading, watch, anime: data?.detail, error };

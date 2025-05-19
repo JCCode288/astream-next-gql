@@ -12,7 +12,7 @@ const rootTypeDefs = gql`
          movie_page: Int
          popular_page: Int
       ): ZoroResult
-      user(userId: ID, browserId: ID): User
+      user(userId: ID, clientId: ID): User
    }
 
    type Mutation {

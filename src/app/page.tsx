@@ -1,29 +1,25 @@
-import useMainAnimes from "@/components/hooks/useAnimes";
+"use client";
+import useMainAnimes from "@/hooks/useAnimes";
 import MainHero from "@/components/main/main-hero";
 import MainTabs from "@/components/main/main-tabs";
+import animeStore from "@/lib/stores/animes.store";
+import { useEffect } from "react";
 
 // these configs was needed to force page to be dynamically loaded for gql
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
 
-export default async function HomePage() {
-   const { error, animes } = await useMainAnimes();
+export default function HomePage() {
+   const { error, animes, loading } = useMainAnimes();
 
-   if (!animes || error)
-      return (
-         <div
-            className="flex flex-1 bg-black text-white text-center
-   "
-         >
-            Server had trouble. Please comeback again later
-         </div>
-      );
+   const resetPagination = animeStore().resetPagination;
+   useEffect(() => {
+      resetPagination();
+   }, []);
 
    return (
       <div className="flex flex-1 flex-col bg-black text-white justify-center items-center">
          <main>
             {/* Hero Section */}
-            {animes?.datas?.highlighted && (
+            {!!animes?.datas?.highlighted && (
                <section className="relative h-[70dvh] overflow-hidden">
                   <MainHero
                      highlighted={animes.datas?.highlighted?.results[0]}
@@ -34,7 +30,11 @@ export default async function HomePage() {
             {/* Content Sections */}
             <section className="py-12">
                <div className="container">
-                  <MainTabs animes={animes} />
+                  <MainTabs
+                     loading={loading}
+                     animes={animes}
+                     error={error}
+                  />
                   {/* Continue Watching Section */}
                   {/* <MainContinue histories={histories} /> */}
 

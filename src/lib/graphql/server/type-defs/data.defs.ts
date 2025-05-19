@@ -28,7 +28,7 @@ const dataTypeDefs = gql`
    }
 
    type ZoroResult {
-      keys: [String]
+      keys: [String]!
       datas: MainAnimes
    }
 
@@ -88,10 +88,17 @@ const dataTypeDefs = gql`
 
    type Source {
       headers: SourceHeader
+      intro: SourceStamp
+      outro: SourceStamp
       sources: [Video]!
-      subtitles: [Subtitle]!
+      subtitles: [Subtitle]
       download: String
       embedURL: String
+   }
+
+   type SourceStamp {
+      start: Int!
+      End: Int!
    }
 
    type SourceHeader {
@@ -115,7 +122,7 @@ const dataTypeDefs = gql`
    type User {
       name: String!
       email: String
-      browserId: String!
+      clientId: String!
       userId: String
       canComment: Boolean!
       config: UserConfig

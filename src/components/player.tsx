@@ -40,6 +40,7 @@ export default function Player({
       });
 
       return () => {
+         alert("CLEAN UP TRIGGERED");
          if (art) {
             art?.destroy(true);
             art?.hls?.destroy();
@@ -55,13 +56,7 @@ export default function Player({
    }, [art, hlsInst]);
 
    useEffect(() => {
-      if (
-         !streamDiv.current ||
-         !currentSource ||
-         !currentSubs?.url ||
-         !animeId ||
-         !epsId
-      )
+      if (!streamDiv.current || !currentSource || !animeId || !epsId)
          return;
       if (art) art.destroy(true);
 
@@ -70,7 +65,7 @@ export default function Player({
          currentSource,
          referer,
          qualities,
-         currentSubs: currentSubs.url,
+         currentSubs: currentSubs?.url,
          div: streamDiv.current,
          hls,
       });

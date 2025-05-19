@@ -4,7 +4,7 @@ const inputTypeDefs = gql`
    input AddUser {
       name: String!
       email: String
-      browserId: String!
+      clientId: String!
       userId: String
       canComment: Boolean!
       config: AddUserConfig

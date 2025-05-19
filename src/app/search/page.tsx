@@ -1,6 +1,6 @@
 "use client";
 
-import useSearchAnime from "@/components/hooks/useSearch";
+import useSearchAnime from "@/hooks/useSearch";
 import SearchMain from "@/components/search-main";
 import animeStore from "@/lib/stores/animes.store";
 import { useEffect } from "react";

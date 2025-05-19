@@ -9,7 +9,7 @@ import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useParams } from "next/navigation";
-import useWatchAnime from "@/components/hooks/useWatch";
+import useWatchAnime from "@/hooks/useWatch";
 import Loading from "./loading";
 import { Badge } from "@/components/ui/badge";
 import { IAnimeResult } from "@consumet/extensions";
@@ -95,6 +95,7 @@ export default function WatchPage() {
                <h2 className="text-lg font-bold mb-4">Episodes</h2>
 
                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                  {/* Handle Episode pagination */}
                   {anime.episodes.map((eps: IAnimeResult) => {
                      const isCurrentEpisode = eps.id === id;
 

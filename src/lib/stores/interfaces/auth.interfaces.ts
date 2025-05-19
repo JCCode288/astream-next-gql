@@ -7,7 +7,7 @@ export interface IUserConfig {
 }
 
 export interface IAuthData {
-   browserId: string | null;
+   clientId: string | null;
    userId: string | null;
    token: string | null;
    isLoggedIn: boolean;

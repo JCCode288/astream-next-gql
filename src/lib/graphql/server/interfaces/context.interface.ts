@@ -1,6 +1,7 @@
 export interface IContextBody {
+   token?: string;
    provider?: string;
-   ip: string;
+   clientId: string;
 }
 
 export interface IVariableID {
@@ -14,5 +15,5 @@ export interface IVariableQuery {
 
 export interface IVariableUser {
    userId?: string;
-   browserId?: string;
+   clientId?: string;
 }
