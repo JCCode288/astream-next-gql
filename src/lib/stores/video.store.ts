@@ -32,6 +32,12 @@ const videoStore = create<IPlayerStore>()((set, get) => ({
    setSubs(subs) {
       set((state) => ({ ...state, subs }));
    },
+   setIntro(intro) {
+      set((state) => ({ ...state, intro }));
+   },
+   setOutro(outro) {
+      set((state) => ({ ...state, outro }));
+   },
    reset() {
       set(() => initialState);
    },
