@@ -87,15 +87,22 @@ export default class APIProvider {
          console.log("[Failed to save stream]");
       }
    }
+
+   /**
+    *
+    * @param filter
+    * @returns
+    */
    async getSubs(filter: ISubsFilter): Promise<ISubsData | undefined> {
       try {
+         const { animeId, episodeId } = filter;
          const params = new URLSearchParams();
-         params.append("animeId", filter.animeId);
-         params.append("episodeId", filter.episodeId);
+         params.append("animeId", animeId);
+         params.append("episodeId", episodeId);
 
          const key = keyBuilder({
-            animeId: filter.animeId,
-            episodeId: filter.episodeId,
+            animeId,
+            episodeId,
          });
 
          const headers = {
@@ -116,13 +123,17 @@ export default class APIProvider {
          return;
       }
    }
-
+   /**
+    *
+    * @param subsData
+    */
    async saveSubs(subsData: ISubsData) {
       try {
+         const { animeId, episodeId, data } = subsData;
          const key = keyBuilder({
-            animeId: subsData.animeId,
-            episodeId: subsData.episodeId,
-            data: subsData.data,
+            animeId,
+            episodeId,
+            data,
          });
          const headers = {
             "X-Validation": this.getValidationHash(key),
@@ -141,7 +152,12 @@ export default class APIProvider {
          console.log("[Failed to save subs]");
       }
    }
-
+   /**
+    *
+    * @param animeId
+    * @param episodeId
+    * @returns
+    */
    async getSources(
       animeId: string,
       episodeId: string
@@ -170,7 +186,12 @@ export default class APIProvider {
          console.log("[Failed to get source data]");
       }
    }
-
+   /**
+    *
+    * @param animeId
+    * @param episodeId
+    * @param sourceData
+    */
    async saveSources(
       animeId: string,
       episodeId: string,
@@ -200,7 +221,11 @@ export default class APIProvider {
          console.log("[Failed to save source data]");
       }
    }
-
+   /**
+    *
+    * @param animeId
+    * @returns
+    */
    async getAnime(animeId: string) {
       try {
          const identifier = { animeId };
@@ -223,9 +248,14 @@ export default class APIProvider {
          console.log("[Failed to get anime data]");
       }
    }
+   /**
+    *
+    * @param animeData
+    */
    async saveAnime(animeData: IAnimeInfo) {
       try {
-         const identifier = { animeId: animeData.id };
+         const { id: animeId } = animeData;
+         const identifier = { animeId };
          const key = keyBuilder(identifier);
          const headers = {
             "X-Validation": this.getValidationHash(key),
@@ -251,7 +281,11 @@ export default class APIProvider {
          console.log("[Failed to save anime data]");
       }
    }
-
+   /**
+    *
+    * @param payload
+    * @returns
+    */
    private getValidationHash(payload: string) {
       const validation = createHmac(
          process.env.SECRET_ALG!,

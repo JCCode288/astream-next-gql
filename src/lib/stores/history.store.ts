@@ -2,10 +2,8 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import {
-   CurrentWatch,
    IHistoryData,
    IHistoryStore,
-   IWatchEpisodes,
    IWatchList,
 } from "./interfaces/anime.interfaces";
 
@@ -23,16 +21,16 @@ const historyStore = create<IHistoryStore>()(
             for (const wl of watchlist) {
                if (wl.animeId !== animeId) continue;
 
-               for (const eps of wl.episodes) {
-                  const id = `${animeId}$episode$${episodeId}`;
-                  if (eps?.episode?.id !== id) continue;
+               const id = `${animeId}$episode$${episodeId}`;
 
+               const eps = wl.episodes[id];
+               if (eps)
                   return {
                      animeId: animeId,
                      aniName: wl.aniName,
+                     img: wl.img,
                      ...eps,
                   };
-               }
             }
 
             return null;
@@ -48,57 +46,52 @@ const historyStore = create<IHistoryStore>()(
                if (wl.animeId !== currentWatch.animeId) continue;
 
                anidex = i;
+               const epsId = currentWatch?.episode?.id;
+               const eps = wl.episodes[epsId];
 
-               for (const eps of wl.episodes) {
-                  if (eps.episode?.id !== currentWatch.episode?.id)
-                     continue;
+               if (!eps) break;
 
-                  epsFlag = true;
+               epsFlag = true;
 
-                  eps.timestamp = currentWatch.timestamp;
-                  eps.duration = currentWatch.duration;
-
-                  break;
-               }
-
-               if (epsFlag) break;
-
-               wl.episodes.push({
-                  episode: currentWatch.episode,
-                  timestamp: currentWatch.timestamp,
-                  duration: currentWatch.duration,
-               });
+               eps.timestamp = currentWatch.timestamp;
+               eps.duration = currentWatch.duration;
             }
 
+            // case updated
             if (anidex >= 0 && epsFlag) {
                set((state) => ({ ...state, watch_list: watchlist }));
                return;
             }
 
+            // case new eps recorded
             if (anidex >= 0 && !epsFlag) {
-               watchlist[anidex].episodes.push({
+               const id = currentWatch.episode.id;
+
+               watchlist[anidex].episodes[id] = {
                   episode: currentWatch.episode,
                   timestamp: currentWatch.timestamp,
                   duration: currentWatch.duration,
-               });
+               };
 
                set((state) => ({ ...state, watch_list: watchlist }));
                return;
             }
 
-            const { animeId, aniName, episode, timestamp, duration } =
+            // case new anime recorded
+            const { animeId, aniName, img, episode, timestamp, duration } =
                currentWatch;
 
-            const watchdata = {
+            const watchdata: IWatchList = {
                animeId,
                aniName,
-               episodes: [
-                  {
+               img,
+               episodes: {
+                  [episode.id]: {
                      episode,
                      timestamp,
                      duration,
                   },
-               ],
+               },
             };
 
             watchlist.push(watchdata);

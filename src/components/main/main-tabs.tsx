@@ -11,13 +11,10 @@ import capitalize from "@/lib/utils.capitalize";
 import MainPagination from "./main-pagination";
 import animeStore from "@/lib/stores/animes.store";
 import Loading from "@/app/loading";
+import historyStore from "@/lib/stores/history.store";
+import { IWatchList } from "@/lib/stores/interfaces/anime.interfaces";
 
 export default function MainTabs({ animes, loading, error }: any) {
-   const [tabVal, setTabVal] = useState(() => "recent");
-   const sectionName = useMemo(() => {
-      return `${capitalize(tabVal)} Animes`;
-   }, [tabVal]);
-
    const recentPage = animeStore().recent_page;
    const topPage = animeStore().top_page;
    const moviePage = animeStore().movie_page;
@@ -27,6 +24,14 @@ export default function MainTabs({ animes, loading, error }: any) {
    const setTopPage = animeStore().setTopPage;
    const setMoviePage = animeStore().setMoviePage;
    const setPopularPage = animeStore().setPopularPage;
+   const watchlist = historyStore().watch_list;
+
+   const [tabVal, setTabVal] = useState(() =>
+      !watchlist.length ? "recent" : "watchlist"
+   );
+   const sectionName = useMemo(() => {
+      return `${capitalize(tabVal)} Animes`;
+   }, [tabVal]);
 
    const baseRef = useRef<HTMLDivElement>(null);
    useEffect(() => {
@@ -38,6 +43,8 @@ export default function MainTabs({ animes, loading, error }: any) {
       return Object.fromEntries(
          animes?.keys.map((key: string) => {
             switch (key) {
+               case "on_going":
+                  return [key, null];
                case "top":
                   return [key, { current: topPage, func: setTopPage }];
                case "movies":
@@ -72,18 +79,22 @@ export default function MainTabs({ animes, loading, error }: any) {
       );
 
    return (
-      <Tabs
-         defaultValue="recent"
-         value={tabVal}
-         onValueChange={setTabVal}
-         className="mb-12"
-      >
+      <Tabs value={tabVal} onValueChange={setTabVal} className="mb-12">
          <div
             className="flex items-center justify-between mb-6 gap-2 flex-col md:flex-row"
             ref={baseRef}
          >
             <h2 className="text-2xl font-bold">{sectionName}</h2>
             <TabsList className="bg-zinc-900">
+               {!!watchlist.length && (
+                  <TabsTrigger
+                     value={"watchlist"}
+                     className="data-[state=active]:bg-rose-500"
+                  >
+                     On Going
+                  </TabsTrigger>
+               )}
+
                {animes.keys.map((k: string, i: number) => {
                   return (
                      <TabsTrigger
@@ -97,6 +108,23 @@ export default function MainTabs({ animes, loading, error }: any) {
                })}
             </TabsList>
          </div>
+
+         {!!watchlist.length && (
+            <TabsContent value={"watchlist"} className="mt-0">
+               <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  {watchlist.map((wl: IWatchList, i: number) => (
+                     <AnimeCard
+                        key={`watchlist-${i}`}
+                        anime={{
+                           title: wl.aniName,
+                           image: wl.img,
+                           id: wl.animeId,
+                        }}
+                     />
+                  ))}
+               </div>
+            </TabsContent>
+         )}
 
          {animes.keys.map((k: string, i: number) => {
             const animeDatas = animes?.datas[k];

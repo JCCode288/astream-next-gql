@@ -29,9 +29,11 @@ export default function AnimeCard({ anime }: { anime: IAnimeResult }) {
                <div className="flex items-center justify-between mt-1 text-xs text-zinc-400">
                   <span>{releaseDate}</span>
                </div>
-               <div className="flex items-center justify-between mt-1 text-xs text-zinc-400">
-                  <span>{durationToHourMin(duration)}</span>
-               </div>
+               {!!duration && (
+                  <div className="flex items-center justify-between mt-1 text-xs text-zinc-400">
+                     <span>{durationToHourMin(duration)}</span>
+                  </div>
+               )}
             </CardContent>
          </Card>
       </Link>
