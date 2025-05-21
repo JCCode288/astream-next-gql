@@ -24,7 +24,8 @@ export interface IWatchData {
    img?: string;
 }
 
-export type CurrentWatch = IWatchEpisodes & IWatchData;
+export type CurrentWatch = Omit<IWatchEpisodes, "finished" | "started"> &
+   IWatchData;
 
 export interface IWatchList extends IWatchData {
    episodes: {
