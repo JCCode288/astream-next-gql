@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -35,26 +35,33 @@ export default function WatchPage() {
       return anime?.episodes?.find((ani: IAnimeEpisode) => ani.id === id);
    }, [episode, anime]);
 
+   const saveHist = useCallback(
+      (data: SavePlayback) => {
+         // @notes - saving it to store for later implementation of load and save on app initialization
+         if (!currentEpisode) return;
+
+         addToWatchList({
+            animeId: anime.id,
+            aniName: anime.title.toString(),
+            img: anime.image,
+            episode: currentEpisode,
+            timestamp: data.timestamp,
+            duration: data.duration,
+         });
+      },
+      [currentEpisode]
+   );
+
    if (loading || !anime || !animeId || !episodeId) return <Loading />;
-
-   const saveHist = (data: SavePlayback) => {
-      // @notes - saving it to store for later implementation of load and save on app initialization
-
-      addToWatchList({
-         animeId: anime.id,
-         aniName: anime.title.toString(),
-         episode: currentEpisode,
-         timestamp: data.timestamp,
-         duration: data.duration,
-      });
-   };
 
    return (
       <div className="min-h-screen bg-black text-white flex flex-col">
          {/* Video Player Container */}
          <PreviousButton />
          <div>
-            <h1>{anime.title.toString()}</h1>
+            <h1 className="mt-4 mb-2 lg:ml-4 md:ml-2 ml-1">
+               {anime.title.toString()} - {currentEpisode?.number}
+            </h1>
          </div>
          <Player
             epsId={episodeId?.toString()}
@@ -114,7 +121,7 @@ export default function WatchPage() {
             <div>
                <h2 className="text-lg font-bold mb-4">Episodes</h2>
 
-               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+               <div className="grid grid-cols-1 mx-4 sm:mx-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                   {/* Handle Episode pagination */}
                   {anime.episodes?.map((eps: IAnimeEpisode) => {
                      const isCurrentEpisode =

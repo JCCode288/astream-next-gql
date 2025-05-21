@@ -12,10 +12,17 @@ import BackButton from "@/components/back-home-button";
 import WatchButton from "@/components/details/watch-button";
 import { useParams } from "next/navigation";
 import Loading from "./loading";
+import historyStore from "@/lib/stores/history.store";
+import { useMemo } from "react";
 
 export default function AnimeDetailPage() {
    const { id } = useParams();
-   const { detail, loading, error } = useDetailAnime(id as string);
+   const { detail, loading } = useDetailAnime(id as string);
+   const watchlist = historyStore().watch_list;
+   const animeHist = useMemo(
+      () => watchlist.find((wl) => wl.animeId === id),
+      [watchlist]
+   );
 
    if (loading) return <Loading />;
 
@@ -232,7 +239,7 @@ export default function AnimeDetailPage() {
                            key={`episode-${i}`}
                            episode={eps}
                            latest
-                           watched={false}
+                           watched={!!animeHist?.episodes[eps.id]}
                         />
                      );
 
@@ -242,7 +249,7 @@ export default function AnimeDetailPage() {
                         key={`episode-${i}`}
                         episode={eps}
                         latest={false}
-                        watched={false}
+                        watched={!!animeHist?.episodes[eps.id]}
                      />
                   );
                })}

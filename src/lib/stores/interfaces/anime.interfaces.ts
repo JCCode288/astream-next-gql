@@ -11,20 +11,23 @@ import {
 } from "@consumet/extensions";
 
 export interface IWatchEpisodes {
-   episode?: IAnimeEpisode;
+   episode: IAnimeEpisode;
    timestamp: number;
    duration: number;
 }
 
-export type CurrentWatch = IWatchEpisodes & {
+export interface IWatchData {
    animeId: string;
    aniName: string;
-};
+   img?: string;
+}
 
-export interface IWatchList {
-   animeId: string;
-   aniName: string;
-   episodes: IWatchEpisodes[];
+export type CurrentWatch = IWatchEpisodes & IWatchData;
+
+export interface IWatchList extends IWatchData {
+   episodes: {
+      [k: string]: IWatchEpisodes;
+   };
 }
 
 export interface IHistoryData {
