@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Astreamline Project
 
-## Getting Started
+this project is an anime streaming website without obstructive ads.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### GraphQL
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+-  Data is served to client side nextjs by GrapQL API. it was done so to give "Realtime" feel as i cannot have event where the anime has been updates, app will repeatedly request for new data for defined interval (main: 1 min, detail: 3 min)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Anime Scrapper
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+-  Anime scrapper is used in wrapper to strategize the interface. just in case datasource is changed, the layer above it shouldn't changed that much.
 
-## Learn More
+For base scrapper it used <a href="https://github.com/consumet/consumet.ts">Consumet.ts</a>. it scrapped from big provider using cheerio (in this case i used zoro/hianime)
 
-To learn more about Next.js, take a look at the following resources:
+### API Provider
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+-  Scrapped anime can be saved using API Provider. Provider can be interexchangeable and is separate system from this main app. you can built the API backend in same interface as mine, and interexchange it. as it doesn't throw any error. just to persist data scrapped
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+It saves and fetched:
 
-## Deploy on Vercel
+-  Stream data
+-  Subs data
+-  Stream Sources data
+-  Anime detail data
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+> the data is signed in hash mechanism that tooks identification from the payload + secret key and arrange it in manner to backend for easier validation.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Client Identification
+
+-  IP is hashed and embedded as cookies for easier identification of clients.
+
+### Stream Proxy
+
+-  Stream source is proxied and to add proper headers for player to stream the hls data. proxy mechanism takes the url as parameter to the hls stream data.
+
+### Watchlist Record
+
+-  Locally recorded watchlist history in browser. this means that no credentials needed for watchlist mechanism other than `Client ID`. Further implementation of persisting watchlist will be method to persisting this record to API and if there's one set up.
+
+   > Finish status implemented from Quartile 3 (75%) of the duration has been reached, eventhough most animes are in 80% but Q3 is enough to determine finished status for anime above 5 mins. under 10 mins, it is on 90%.
+
+-  This features will receive future updates. (re: upcoming features)
+
+## Upcoming Features
+
+Upcoming features will be sorted from most important and will be worked on in ascending
+
+### Skip Intro/Outro
+
+-  There will be toggle button either in player or stream page where user can toggle whether intro/outro is skipped or not. this toggle will be available if the data has intro/outro data on it. the config will be saved locally per client and will be persisted if API Provider is set up.
+
+### Ratings
+
+-  Ratings for each user will be recorded locally and integrated to watchlist record. will have averaged ratings per anime id, editable and persisted through API Provider
+
+### Recommendation
+
+-  Once ratings has been implemented. It will have recommendation system that tooks averaged and other implicit data from client watchlist to determine the recommendation for user
+
+## Routes\*
+
+### View
+
+-  Main Page: `/`
+-  Detail Page: `/anime/<id>`
+-  Stream Page: `/anime/<id>/watch/<eps_id>`
+
+### API
+
+-  GraphQL: `/api/graphql`
+-  Stream Proxy: `/api/stream/<url>`
+-  Subs Proxy: `/api/subs?url=<url>&animeId=<id>&episodeId=<id>`
+
+\*All routes detail will be excluded
