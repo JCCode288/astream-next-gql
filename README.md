@@ -41,6 +41,8 @@ It saves and fetched:
 
    > Finish status implemented from Quartile 3 (75%) of the duration has been reached, eventhough most animes are in 80% but Q3 is enough to determine finished status for anime above 5 mins. under 10 mins, it is on 90%.
 
+   > Start duration for longer episodes started on first 10% (e.g 30 mins duration = first 3 mins) and for shorter at 30% (e.g 10 mins duration = first 1 min)
+
 -  This features will receive future updates. (re: upcoming features)
 
 ## Upcoming Features

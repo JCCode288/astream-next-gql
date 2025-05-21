@@ -39,6 +39,21 @@ const historyStore = create<IHistoryStore>()(
             const watchlist = get().watch_list;
             let anidex: number = -1;
             let epsFlag = false;
+            let isFinished = false;
+            let finishDuration = 0;
+            let startDuration = currentWatch.duration * 0.1;
+            let isStarted = currentWatch.timestamp >= startDuration;
+
+            if (currentWatch.duration > 60 * 10) {
+               // finished situation 75% (quartile 3)
+               finishDuration = currentWatch.duration * 0.75;
+            } else {
+               // finished situation 90%
+               finishDuration = currentWatch.duration * 0.9;
+            }
+
+            if (currentWatch.timestamp >= finishDuration)
+               isFinished = true;
 
             for (let i = 0; i < watchlist.length; i++) {
                const wl = watchlist[i];
@@ -71,6 +86,8 @@ const historyStore = create<IHistoryStore>()(
                   episode: currentWatch.episode,
                   timestamp: currentWatch.timestamp,
                   duration: currentWatch.duration,
+                  started: isStarted,
+                  finished: isFinished,
                };
 
                set((state) => ({ ...state, watch_list: watchlist }));
@@ -90,6 +107,8 @@ const historyStore = create<IHistoryStore>()(
                      episode,
                      timestamp,
                      duration,
+                     started: isStarted,
+                     finished: isFinished,
                   },
                },
             };
