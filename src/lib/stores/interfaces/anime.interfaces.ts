@@ -14,6 +14,8 @@ export interface IWatchEpisodes {
    episode: IAnimeEpisode;
    timestamp: number;
    duration: number;
+   finished: boolean;
+   started: boolean;
 }
 
 export interface IWatchData {
