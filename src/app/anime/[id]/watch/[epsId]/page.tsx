@@ -47,7 +47,6 @@ export default function WatchPage() {
             episode: currentEpisode,
             timestamp: data.timestamp,
             duration: data.duration,
-            
          });
       },
       [currentEpisode]
