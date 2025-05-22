@@ -27,6 +27,16 @@ export interface IWatchData {
 export type CurrentWatch = Omit<IWatchEpisodes, "finished" | "started"> &
    IWatchData;
 
+export type SavePlayback = Omit<
+   IWatchEpisodes,
+   "episode" | "finished" | "started"
+>;
+
+export interface ICustomPlayback {
+   save: (data: SavePlayback) => void;
+   current: Partial<SavePlayback>;
+}
+
 export interface IWatchList extends IWatchData {
    episodes: {
       [k: string]: IWatchEpisodes;
