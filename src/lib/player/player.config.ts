@@ -4,7 +4,6 @@ import type Option from "artplayer/types/option";
 import Hls from "hls.js";
 import { IGenerateOpts } from "../stores/interfaces/vid-player.interfaces";
 import ArtplayerChapter from "artplayer-plugin-chapter";
-import Artplayer from "artplayer";
 import ArtplayerThumbnailPlugin from "artplayer-plugin-auto-thumbnail";
 import skipPlugin from "./skip.plugin";
 
@@ -88,10 +87,6 @@ export default function playerConfig({
 
    if (chapters.length) {
       opts.plugins?.push(ArtplayerChapter({ chapters }));
-   }
-
-   if (!currentSubs) {
-      return opts;
    }
 
    opts.subtitle = {

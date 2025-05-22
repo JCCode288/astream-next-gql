@@ -13,6 +13,7 @@ export async function GET(req: NextRequest) {
 
       if (!paramsUrl || !animeId || !episodeId)
          throw new Error("Referer or URL is invalid");
+
       paramsUrl = decodeURIComponent(paramsUrl);
 
       const filter = {
@@ -21,17 +22,13 @@ export async function GET(req: NextRequest) {
       };
       let resHeaders: Record<string, string> = {};
 
-      const subsData = await apiProvider.getSubs(filter);
+      // const subsData = await apiProvider.getSubs(filter);
 
-      if (subsData) {
-         console.log("<< DB Hit Subs >>");
-
-         return new NextResponse(subsData.data, {
-            headers: subsData.headers,
-         });
-      }
-
-      console.log("<< DB Miss Subs >>");
+      // if (subsData) {
+      //    return new NextResponse(subsData.data, {
+      //       headers: subsData.headers,
+      //    });
+      // }
 
       const res = await fetch(paramsUrl, {
          method: "GET",
@@ -46,15 +43,15 @@ export async function GET(req: NextRequest) {
       resHeaders["Origin"] = req.nextUrl.origin;
       resHeaders["Content-Type"] = res.headers.get("Content-Type")!;
 
-      const data = await res.arrayBuffer();
+      const data = await res.text();
 
-      const saveSubs: ISubsData = {
-         animeId,
-         episodeId,
-         data: Buffer.from(data).toString("base64"),
-         headers: resHeaders,
-      };
-      await apiProvider.saveSubs(saveSubs);
+      // const saveSubs: ISubsData = {
+      //    animeId,
+      //    episodeId,
+      //    data,
+      //    headers: resHeaders,
+      // };
+      // await apiProvider.saveSubs(saveSubs);
 
       return new NextResponse(data, {
          headers: resHeaders,

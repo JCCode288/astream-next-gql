@@ -55,11 +55,20 @@ export default function Player({ animeId, epsId, save }: IPlayerProps) {
    }, [art, hlsInst]);
 
    useEffect(() => {
-      if (!streamDiv.current || !currentSource || !animeId || !epsId)
+      if (
+         !streamDiv.current ||
+         !currentSource ||
+         !animeId ||
+         !epsId ||
+         !currentSubs?.url
+      )
          return;
-      if (art) art.destroy(true);
+
+      console.log({ currentSubs, animeId, epsId });
 
       const hls = hlsBuilder(animeId, epsId);
+      if (!hls) return;
+
       const config = playerConfig({
          currentSource,
          referer,
