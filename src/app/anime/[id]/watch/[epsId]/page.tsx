@@ -15,8 +15,8 @@ import { Badge } from "@/components/ui/badge";
 import { IAnimeEpisode } from "@consumet/extensions";
 import Player from "@/components/player";
 import PreviousButton from "@/components/back-home-button";
-import { SavePlayback } from "@/lib/player/playback.plugin";
 import historyStore from "@/lib/stores/history.store";
+import { SavePlayback } from "@/lib/stores/interfaces/anime.interfaces";
 
 export default function WatchPage() {
    const { id: animeId, epsId: episodeId } = useParams();

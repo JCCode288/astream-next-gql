@@ -1,5 +1,5 @@
 import Artplayer from "artplayer";
-import { IWatchEpisodes } from "../stores/interfaces/anime.interfaces";
+import { ICustomPlayback } from "../stores/interfaces/anime.interfaces";
 
 /**
  *
@@ -96,11 +96,4 @@ export default function customAutoPlayback({
          name: "custom-playback",
       };
    };
-}
-
-export type SavePlayback = Omit<IWatchEpisodes, "episode">;
-
-interface ICustomPlayback {
-   save: (data: SavePlayback) => void;
-   current: Partial<SavePlayback>;
 }
