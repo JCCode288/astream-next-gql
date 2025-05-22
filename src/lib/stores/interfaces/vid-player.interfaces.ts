@@ -1,7 +1,7 @@
-import { SavePlayback } from "@/lib/player/playback.plugin";
 import { Intro, ISubtitle, IVideo } from "@consumet/extensions";
 import { ComponentOption } from "artplayer/types/component";
 import Hls from "hls.js";
+import { SavePlayback } from "./anime.interfaces";
 
 export interface IVideoQuality {
    default: boolean;
