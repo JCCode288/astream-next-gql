@@ -1,7 +1,6 @@
 import Hls from "hls.js";
 
 export default function hlsBuilder(animeId: string, epsId: string) {
-   if (!animeId || !epsId) return;
    const hls = new Hls({
       enableWorker: true,
       xhrSetup: (xhr, url) => {

@@ -22,13 +22,13 @@ export async function GET(req: NextRequest) {
       };
       let resHeaders: Record<string, string> = {};
 
-      // const subsData = await apiProvider.getSubs(filter);
+      const subsData = await apiProvider.getSubs(filter);
 
-      // if (subsData) {
-      //    return new NextResponse(subsData.data, {
-      //       headers: subsData.headers,
-      //    });
-      // }
+      if (subsData) {
+         return new NextResponse(subsData.data, {
+            headers: subsData.headers,
+         });
+      }
 
       const res = await fetch(paramsUrl, {
          method: "GET",
@@ -41,17 +41,25 @@ export async function GET(req: NextRequest) {
          );
 
       resHeaders["Origin"] = req.nextUrl.origin;
-      resHeaders["Content-Type"] = res.headers.get("Content-Type")!;
+
+      if (paramsUrl.endsWith(".vtt"))
+         resHeaders["Content-Type"] = "text/vtt";
+
+      if (!resHeaders["Content-Type"] && res.headers.has("Content-Type"))
+         resHeaders["Content-Type"] = res.headers.get("Content-Type")!;
+
+      if (!resHeaders["Content-Type"])
+         resHeaders["Content-Type"] = "text/vtt";
 
       const data = await res.text();
 
-      // const saveSubs: ISubsData = {
-      //    animeId,
-      //    episodeId,
-      //    data,
-      //    headers: resHeaders,
-      // };
-      // await apiProvider.saveSubs(saveSubs);
+      const saveSubs: ISubsData = {
+         animeId,
+         episodeId,
+         data,
+         headers: resHeaders,
+      };
+      await apiProvider.saveSubs(saveSubs);
 
       return new NextResponse(data, {
          headers: resHeaders,

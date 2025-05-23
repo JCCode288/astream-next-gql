@@ -64,8 +64,6 @@ export default function Player({ animeId, epsId, save }: IPlayerProps) {
       )
          return;
 
-      console.log({ currentSubs, animeId, epsId });
-
       const hls = hlsBuilder(animeId, epsId);
       if (!hls) return;
 
