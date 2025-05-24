@@ -84,10 +84,10 @@ const resolvers = {
 
             const [animeId, episodeId] = id.split("$episode$");
 
-            let watch = await apiProvider.getSources(animeId, episodeId);
-            if (watch) return watch;
+            // let watch = await apiProvider.getSources(animeId, episodeId);
+            // if (watch) return watch;
 
-            watch = await aniProvider.watch(id);
+            const watch = await aniProvider.watch(id);
             const params = new URLSearchParams();
             if (watch.headers?.Referer)
                params.append("ref", watch.headers.Referer);
@@ -107,7 +107,8 @@ const resolvers = {
                return sub;
             });
 
-            await apiProvider.saveSources(animeId, episodeId, watch);
+            // @notes - seems like saving sources is bad idea unless i know exactly what to save from stream segments
+            // await apiProvider.saveSources(animeId, episodeId, watch);
 
             return watch;
          } catch (err) {
