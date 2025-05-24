@@ -1,13 +1,12 @@
 "use client";
 import authStore from "@/lib/stores/auth.store";
 import Link from "next/link";
-import UserMenu from "./auth/user-menu";
-import GoogleButton from "./auth/google-button";
-import { Search } from "lucide-react";
-import { Input } from "./ui/input";
+import UserMenu from "../auth/user-menu";
+import GoogleButton from "../auth/google-button";
 import animeStore from "@/lib/stores/animes.store";
 import { ChangeEvent, KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
+import SearchCombobox from "./search-combobox";
 
 export default function Navbar() {
    const isLoggedIn = authStore().isLoggedIn;
@@ -68,7 +67,7 @@ export default function Navbar() {
             </div>
             <div className="flex items-center gap-4">
                <div className="relative w-full max-w-sm">
-                  <Search
+                  {/* <Search
                      onClick={handleIconTap}
                      className="absolute left-2.5 top-2.5 h-4 w-4 text-zinc-500 cursor-pointer"
                   />
@@ -79,7 +78,8 @@ export default function Navbar() {
                      onChange={handleSearch}
                      onKeyDown={handleSubmitSearch}
                      value={query ?? ""}
-                  />
+                  /> */}
+                  <SearchCombobox />
                </div>
                {isLoggedIn ? <UserMenu /> : <GoogleButton />}
             </div>
