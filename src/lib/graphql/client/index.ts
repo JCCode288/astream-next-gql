@@ -56,6 +56,12 @@ export function createClient() {
    return new ApolloClient({
       ssrMode: typeof window === "undefined",
       cache: new InMemoryCache(),
+      defaultOptions: {
+         query: {
+            fetchPolicy: "network-only",
+         },
+      },
+      credentials: "same-site",
       link: buildLink("/api/graphql"),
    });
 }
