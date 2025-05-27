@@ -49,7 +49,7 @@ export default function customAutoPlayback({
       art.on("video:timeupdate", async () => {
          if (art.playing) {
             try {
-               await save({
+               save({
                   timestamp: art.currentTime,
                   duration: art.duration,
                });

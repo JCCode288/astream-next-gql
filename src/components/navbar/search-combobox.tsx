@@ -39,16 +39,18 @@ export default function SearchCombobox() {
                variant="outline"
                role="combobox"
                aria-expanded={open}
-               className="w-[200px] justify-between"
+               className="sm:w-96 w-48 justify-between"
             >
-               {data.search
-                  ? data.search.results.find(
-                       (animes) => animes.title === query
-                    )?.label
-                  : "Select animes..."}
+               {data.search ? (
+                  data.search.results.find(
+                     (animes) => animes.title === query
+                  )?.label
+               ) : (
+                  <p className="text-gray-400">Select animes...</p>
+               )}
             </Button>
          </PopoverTrigger>
-         <PopoverContent className="w-[200px] p-0">
+         <PopoverContent className="w-full sm:max-w-96 max-w-48 p-0">
             <Command>
                <CommandInput
                   onValueChange={handleSearch}

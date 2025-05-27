@@ -2,13 +2,7 @@ import Link from "next/link";
 import { Card } from "../ui/card";
 import Image from "next/image";
 
-export default function GenreCard({
-   genre,
-   index,
-}: {
-   genre: string;
-   index: number;
-}) {
+export default function GenreCard({ genre }: { genre: string }) {
    return (
       <Link href="#" className="group">
          <Card className="overflow-hidden bg-zinc-900 border-zinc-800 transition-all hover:border-rose-500/50">

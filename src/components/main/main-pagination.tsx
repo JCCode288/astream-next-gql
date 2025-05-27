@@ -11,15 +11,15 @@ import {
 
 export interface IPagination {
    current: number;
-   totalPages: number;
-   hasNextPage: boolean;
+   totalPages?: number;
+   hasNextPage?: boolean;
    pageFunc: (page: number) => void;
 }
 
 export default function MainPagination({
    current,
-   totalPages,
-   hasNextPage,
+   totalPages = 1,
+   hasNextPage = false,
    pageFunc,
 }: IPagination) {
    const hasPrevPage = current > 1;
