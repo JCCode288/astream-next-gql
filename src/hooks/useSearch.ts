@@ -7,7 +7,7 @@ import { SEARCH_QUERY } from "./queries/search.query";
 export default function useSearchAnime() {
    const search = animeStore().search;
    const page = animeStore().search_page;
-   const query = animeStore().query ?? "";
+   const query = animeStore().query;
 
    const setSearch = animeStore().setSearch;
 

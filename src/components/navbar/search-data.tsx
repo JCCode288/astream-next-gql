@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ApolloError } from "@apollo/client";
 import Spinner from "../spinner";
 import { Dispatch, SetStateAction } from "react";
+import SearchCard from "./search-card";
 
 export interface ISearchDataProps {
    loading: boolean;
@@ -46,7 +47,7 @@ export default function SearchData({
                   value={ani.id}
                   onSelect={handleSelect}
                >
-                  {ani.title.toString()}
+                  <SearchCard anime={ani} />
                </CommandItem>
             ))}
          </CommandGroup>

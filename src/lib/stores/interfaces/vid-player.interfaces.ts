@@ -24,10 +24,13 @@ export interface IGenerateOpts {
 export interface IPlayerProps {
    animeId: string;
    epsId: string;
+   nextFunc: () => void;
    save: (data: SavePlayback) => void;
 }
 
 export interface IPlayerData {
+   autoplay: boolean;
+   skipIntro: boolean;
    headers: Record<string, any> | null;
    currentSource: IVideo | null;
    qualities: IVideoQuality[];
@@ -39,6 +42,8 @@ export interface IPlayerData {
 
 export interface IPlayerStore extends IPlayerData {
    setHeaders(headers: Record<string, any>): void;
+   setAutoplay(autoplay: boolean): void;
+   setSkipIntro(skipIntro: boolean): void;
    setCurrentSource(source: IVideo): void;
    setQualities(qualities: IVideoQuality[]): void;
    setCurrentSubs(lang: ISubtitle): void;

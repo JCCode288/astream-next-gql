@@ -8,11 +8,10 @@ import {
 } from "@/components/ui/tabs";
 import AnimeCard from "@/components/main/anime-card";
 import capitalize from "@/lib/utils.capitalize";
-import MainPagination from "./main-pagination";
 import animeStore from "@/lib/stores/animes.store";
-import Loading from "@/app/loading";
 import historyStore from "@/lib/stores/history.store";
 import { IWatchList } from "@/lib/stores/interfaces/anime.interfaces";
+import MainTabsContent from "./main-tabs-content";
 
 export default function MainTabs({ animes, loading, error }: any) {
    const recentPage = animeStore().recent_page;
@@ -66,8 +65,6 @@ export default function MainTabs({ animes, loading, error }: any) {
       );
    }, [animes]);
 
-   if (loading) return <Loading />;
-
    if (!loading && (!animes || !!error))
       return (
          <div
@@ -95,7 +92,7 @@ export default function MainTabs({ animes, loading, error }: any) {
                   </TabsTrigger>
                )}
 
-               {animes.keys.map((k: string, i: number) => {
+               {animes?.keys.map((k: string, i: number) => {
                   return (
                      <TabsTrigger
                         key={`key-${i}`}
@@ -126,30 +123,20 @@ export default function MainTabs({ animes, loading, error }: any) {
             </TabsContent>
          )}
 
-         {animes.keys.map((k: string, i: number) => {
+         {animes?.keys.map((k: string, i: number) => {
             const animeDatas = animes?.datas[k];
             if (!animeDatas) return null;
 
             const pagination = paginations[k];
 
             return (
-               <TabsContent
+               <MainTabsContent
+                  animes={animeDatas}
+                  pagination={pagination}
                   key={`content-${i}`}
-                  value={k}
-                  className="mt-0"
-               >
-                  <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                     {animeDatas?.results.map((anime: any, i: number) => (
-                        <AnimeCard key={`anime-${i}`} anime={anime} />
-                     ))}
-                  </div>
-                  <MainPagination
-                     pageFunc={pagination?.func}
-                     hasNextPage={animeDatas?.hasNextPage}
-                     current={pagination?.current}
-                     totalPages={animeDatas.totalPages}
-                  />
-               </TabsContent>
+                  loading={loading}
+                  tab={k}
+               />
             );
          })}
       </Tabs>

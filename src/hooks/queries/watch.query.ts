@@ -16,6 +16,14 @@ export const WATCH_QUERY = gql`
          }
          download
          embedURL
+         intro {
+            start
+            end
+         }
+         outro {
+            start
+            end
+         }
          subtitles {
             url
             lang

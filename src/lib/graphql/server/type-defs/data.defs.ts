@@ -98,7 +98,7 @@ const dataTypeDefs = gql`
 
    type SourceStamp {
       start: Int!
-      End: Int!
+      end: Int!
    }
 
    type SourceHeader {
