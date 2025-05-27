@@ -14,7 +14,6 @@ export default function useWatchAnime(animeId: string, episodeId: string) {
    const setHeaders = videoStore().setHeaders;
    const setIntro = videoStore().setIntro;
    const setOutro = videoStore().setOutro;
-   const resetState = videoStore().reset;
 
    const { loading, data, error, refetch } = useQuery(WATCH_QUERY, {
       variables: { id: episodeId, animeId },
@@ -22,7 +21,6 @@ export default function useWatchAnime(animeId: string, episodeId: string) {
 
    useEffect(() => {
       if (!animeId || !episodeId) return;
-      resetState();
       refetch({
          id: episodeId,
          animeId,
@@ -60,5 +58,11 @@ export default function useWatchAnime(animeId: string, episodeId: string) {
       setCurrentSubs(currentSubs);
    }, [data]);
 
-   return { loading, watch, anime: data?.detail as IAnimeInfo, error };
+   return {
+      loading,
+      watch,
+      anime: data?.detail as IAnimeInfo,
+      error,
+      refetch,
+   };
 }

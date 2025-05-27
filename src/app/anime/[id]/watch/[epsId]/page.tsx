@@ -2,13 +2,13 @@
 
 import type React from "react";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import useWatchAnime from "@/hooks/useWatch";
 import Loading from "./loading";
 import { Badge } from "@/components/ui/badge";
@@ -17,9 +17,16 @@ import Player from "@/components/player";
 import PreviousButton from "@/components/back-home-button";
 import historyStore from "@/lib/stores/history.store";
 import { SavePlayback } from "@/lib/stores/interfaces/anime.interfaces";
+import {
+   ToggleGroup,
+   ToggleGroupItem,
+} from "@/components/ui/toggle-group";
+import { FastForward, TvMinimalPlay } from "lucide-react";
+import videoStore from "@/lib/stores/video.store";
 
 export default function WatchPage() {
    const { id: animeId, epsId: episodeId } = useParams();
+   const router = useRouter();
 
    const id = `${animeId}$episode$${episodeId}`;
 
@@ -30,10 +37,39 @@ export default function WatchPage() {
    } = useWatchAnime(animeId as string, id);
 
    const addToWatchList = historyStore().addToWatchList;
+   const skipIntro = videoStore().skipIntro;
+   const autoplay = videoStore().autoplay;
+
+   const setSkipIntro = videoStore().setSkipIntro;
+   const setAutoplay = videoStore().setAutoplay;
 
    const currentEpisode = useMemo(() => {
       return anime?.episodes?.find((ani: IAnimeEpisode) => ani.id === id);
    }, [episode, anime]);
+
+   const nextEpisode = useMemo(() => {
+      if (!currentEpisode) return;
+
+      return anime?.episodes?.find(
+         (ani: IAnimeEpisode) => ani.number === currentEpisode?.number + 1
+      );
+   }, [anime, currentEpisode]);
+
+   const [toggleVal, setToggleVal] = useState<string[]>(() => {
+      const res = [];
+      if (autoplay) res.push("autoplay");
+      if (skipIntro) res.push("skipIntro");
+
+      return res;
+   });
+
+   useEffect(() => {
+      const res: string[] = [];
+      if (autoplay) res.push("autoplay");
+      if (skipIntro) res.push("skipIntro");
+
+      setToggleVal(() => res);
+   }, [autoplay, skipIntro]);
 
    const saveHist = useCallback(
       (data: SavePlayback) => {
@@ -52,6 +88,22 @@ export default function WatchPage() {
       [currentEpisode]
    );
 
+   const handleValueChange = (val: string[]) => {
+      if (val.includes("autoplay")) setAutoplay(true);
+      else setAutoplay(false);
+
+      if (val.includes("skipIntro")) setSkipIntro(true);
+      else setSkipIntro(false);
+   };
+
+   const nextFunc = () => {
+      if (!nextEpisode) return;
+
+      const splitted = nextEpisode.id.split("$");
+      const epsId = splitted[splitted.length - 1];
+      router.push(`/anime/${animeId}/watch/${epsId}`);
+   };
+
    if (loading || !anime || !animeId || !episodeId) return <Loading />;
 
    return (
@@ -59,15 +111,48 @@ export default function WatchPage() {
          {/* Video Player Container */}
          <PreviousButton />
          <div>
-            <h1 className="mt-4 mb-2 lg:ml-4 md:ml-2 ml-1">
-               {anime.title.toString()} - {currentEpisode?.number}
+            <h1 className="mt-4 mb-2 lg:ml-4 md:ml-2 ml-1 text-lg font-semibold">
+               <Link
+                  className="hover:text-rose-500 transition-all duration-100"
+                  href={`/anime/${animeId}`}
+               >
+                  {anime.title.toString()}
+               </Link>{" "}
+               - {currentEpisode?.number}
             </h1>
          </div>
+
+         <div className="flex flex-row mx-4">
+            <ToggleGroup
+               onValueChange={handleValueChange}
+               value={toggleVal}
+               size="lg"
+               type="multiple"
+            >
+               <ToggleGroupItem
+                  className="justify-center items-center"
+                  value="autoplay"
+               >
+                  <TvMinimalPlay className="h-8 w-8" />
+                  Autoplay
+               </ToggleGroupItem>
+
+               <ToggleGroupItem
+                  className="justify-center items-center"
+                  value="skipIntro"
+               >
+                  <FastForward className="h-8 w-8" />
+                  Skip Intro
+               </ToggleGroupItem>
+            </ToggleGroup>
+         </div>
+
          <Player
             epsId={episodeId?.toString()}
             animeId={animeId?.toString()}
             key={`${episodeId?.toString()}-${animeId?.toString()}`}
             save={saveHist}
+            nextFunc={nextFunc}
          />
 
          {/* Episode Information Section */}

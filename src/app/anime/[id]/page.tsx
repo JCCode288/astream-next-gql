@@ -1,8 +1,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { Star, ChevronRight } from "lucide-react";
-
+import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import EpisodeCard from "@/components/details/episode-card";
@@ -23,6 +22,25 @@ export default function AnimeDetailPage() {
       () => watchlist.find((wl) => wl.animeId === id),
       [watchlist]
    );
+   const isContinue =
+      animeHist && !!Object.values(animeHist.episodes).length;
+
+   const watchEps = useMemo(() => {
+      if (!detail?.episodes?.length) return null;
+
+      if (isContinue) {
+         const episodes = Object.values(animeHist.episodes).sort(
+            (a, b) => a.episode.number - b.episode.number
+         );
+
+         const splitted =
+            episodes[episodes.length - 1].episode.id.split("$");
+         return splitted[splitted.length - 1];
+      }
+
+      const splitted = detail.episodes[0].id.split("$");
+      return splitted[splitted.length - 1];
+   }, [detail, isContinue]);
 
    if (loading) return <Loading />;
 
@@ -44,21 +62,16 @@ export default function AnimeDetailPage() {
                            alt={detail?.id + "-poster"}
                            className="object-cover"
                            fill
-                           // height={450}
-                           // width={300}
                         />
                      )}
                   </div>
                   <div className="flex gap-2">
-                     <WatchButton eps={detail?.episodes} id={id} />
-                     {/* <Button
-                        variant="outline"
-                        size="icon"
-                        className="border-zinc-700 bg-zinc-900/50 text-white hover:bg-zinc-900 hover:text-rose-500 hover:border-rose-500"
-                     >
-                        <Heart className="h-4 w-4" />
-                     </Button>
-                     <Button
+                     <WatchButton
+                        eps={watchEps}
+                        id={id}
+                        isContinue={isContinue}
+                     />
+                     {/*<Button
                         variant="outline"
                         size="icon"
                         className="border-zinc-700 bg-zinc-900/50 text-white hover:bg-zinc-900 hover:text-white hover:border-zinc-500"
@@ -114,9 +127,11 @@ export default function AnimeDetailPage() {
                               </span>
                            </div>
                         )}
-                        <div className="text-zinc-400">
-                           {detail?.startDate?.year}
-                        </div>
+                        {!!detail?.startDate?.year && (
+                           <div className="text-zinc-400">
+                              {detail?.startDate?.year}
+                           </div>
+                        )}
                         <div className="text-zinc-400">
                            {detail?.totalEpisodes} Episodes
                         </div>
@@ -497,23 +512,40 @@ export default function AnimeDetailPage() {
             <div className="container justify-center px-4 py-12 border-t border-zinc-800">
                <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-bold">You May Also Like</h2>
-                  <Button
+                  {/* <Button
                      variant="link"
                      className="text-rose-500 hover:text-rose-400 p-0"
                   >
                      See All <ChevronRight className="h-4 w-4 ml-1" />
-                  </Button>
+                  </Button> */}
                </div>
 
                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                   {detail.recommendations.map((rec, i) => (
-                     <SimilarAnimeCard key={i} rec={rec} />
+                     <SimilarAnimeCard key={`rec-${i}`} rec={rec} />
                   ))}
                </div>
             </div>
          )}
+         {!!detail?.relations?.length && (
+            <div className="container justify-center px-4 py-12 border-t border-zinc-800">
+               <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold">Related Animes</h2>
+                  {/* <Button
+                     variant="link"
+                     className="text-rose-500 hover:text-rose-400 p-0"
+                  >
+                     See All <ChevronRight className="h-4 w-4 ml-1" />
+                  </Button> */}
+               </div>
 
-         {/* Footer would go here - reusing from main page */}
+               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                  {detail.relations.map((rel, i) => (
+                     <SimilarAnimeCard key={`rel-${i}`} rec={rel} />
+                  ))}
+               </div>
+            </div>
+         )}
       </div>
    );
 }

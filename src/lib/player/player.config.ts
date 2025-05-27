@@ -89,14 +89,15 @@ export default function playerConfig({
       opts.plugins?.push(ArtplayerChapter({ chapters }));
    }
 
-   opts.subtitle = {
-      url: currentSubs,
-      type: "vtt",
-      style: {
-         color: "#fff",
-      },
-      encoding: "utf-8",
-   };
+   if (currentSubs)
+      opts.subtitle = {
+         url: currentSubs,
+         type: "vtt",
+         style: {
+            color: "#fff",
+         },
+         encoding: "utf-8",
+      };
 
    return opts;
 }

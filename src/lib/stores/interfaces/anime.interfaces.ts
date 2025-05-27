@@ -7,6 +7,7 @@ import {
    IAnimeEpisode,
    IAnimeInfo,
    IAnimeResult,
+   Intro,
    ISearch,
 } from "@consumet/extensions";
 
@@ -35,6 +36,15 @@ export type SavePlayback = Omit<
 export interface ICustomPlayback {
    save: (data: SavePlayback) => void;
    current: Partial<SavePlayback>;
+}
+export interface IAutoplayParams {
+   nextFunc: () => void;
+   autoplay: boolean;
+}
+export interface ISkipIntroParams {
+   intro?: Intro;
+   outro?: Intro;
+   skipIntro: boolean;
 }
 
 export interface IWatchList extends IWatchData {

@@ -1,19 +1,24 @@
 import hlsBuilder from "@/lib/hls.builder";
+import autoplayPlugin from "@/lib/player/autoplay.plugin";
 import customAutoPlayback from "@/lib/player/playback.plugin";
 import playerConfig from "@/lib/player/player.config";
+import skipIntroPlugin from "@/lib/player/skip-intro.plugin";
 import historyStore from "@/lib/stores/history.store";
 import { IPlayerProps } from "@/lib/stores/interfaces/vid-player.interfaces";
 import videoStore from "@/lib/stores/video.store";
 import Artplayer from "artplayer";
-import Hls from "hls.js";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
-export default function Player({ animeId, epsId, save }: IPlayerProps) {
-   const [art, setArt] = useState<Artplayer>();
-   const [hlsInst, setHls] = useState<Hls>();
-
+export default function Player({
+   animeId,
+   epsId,
+   save,
+   nextFunc,
+}: IPlayerProps) {
    const streamDiv = useRef<HTMLDivElement>(null);
    const currentSource = videoStore().currentSource;
+   const autoplay = videoStore().autoplay;
+   const skipIntro = videoStore().skipIntro;
    const qualities = videoStore().qualities;
    const currentSubs = videoStore().currentSubs;
    const referer = videoStore().headers?.Referer;
@@ -22,46 +27,15 @@ export default function Player({ animeId, epsId, save }: IPlayerProps) {
    const getCurrent = historyStore().getCurrent;
 
    useEffect(() => {
-      if (!art) return;
-
-      art.on("resize", () => {
-         art.subtitle.style({
-            fontSize: art.height * 0.05 + "px",
-         });
+      console.log({
+         streamDiv: streamDiv.current,
+         currentSource,
+         animeId,
+         epsId,
+         subs: currentSubs?.url,
       });
 
-      art.on("destroy", () => {
-         if (art) art.hls?.destroy();
-      });
-
-      art.on("ready", () => {
-         if (streamDiv.current)
-            streamDiv.current.scrollTo({ behavior: "smooth" });
-      });
-
-      return () => {
-         if (art) {
-            art?.destroy(true);
-            art?.hls?.destroy();
-            setArt(undefined);
-         }
-
-         if (hlsInst) {
-            hlsInst.removeAllListeners();
-            hlsInst.detachMedia();
-            hlsInst.destroy();
-         }
-      };
-   }, [art, hlsInst]);
-
-   useEffect(() => {
-      if (
-         !streamDiv.current ||
-         !currentSource ||
-         !animeId ||
-         !epsId ||
-         !currentSubs?.url
-      )
+      if (!streamDiv.current || !currentSource || !animeId || !epsId)
          return;
 
       const hls = hlsBuilder(animeId, epsId);
@@ -88,15 +62,40 @@ export default function Player({ animeId, epsId, save }: IPlayerProps) {
             current: current ?? {},
          })
       );
+      artPlayer.plugins.add(autoplayPlugin({ nextFunc, autoplay }));
+      artPlayer.plugins.add(skipIntroPlugin({ intro, outro, skipIntro }));
 
-      setHls(() => hls);
-      setArt(() => artPlayer);
+      artPlayer.on("resize", () => {
+         artPlayer.subtitle.style({
+            fontSize: artPlayer.height * 0.05 + "px",
+         });
+      });
+
+      artPlayer.on("destroy", () => {
+         artPlayer.hls?.destroy();
+      });
+
+      artPlayer.on("ready", () => {
+         if (streamDiv.current)
+            streamDiv.current.scrollTo({ behavior: "smooth" });
+      });
 
       return () => {
-         artPlayer?.destroy(true);
-         artPlayer?.hls?.destroy();
+         artPlayer.destroy(true);
+         artPlayer.hls?.destroy();
+
+         hls.removeAllListeners();
+         hls.detachMedia();
+         hls.destroy();
       };
-   }, [currentSource, qualities, currentSubs, animeId, epsId]);
+   }, [
+      currentSource,
+      qualities,
+      currentSubs,
+      animeId,
+      epsId,
+      streamDiv.current,
+   ]);
 
    return (
       <div
