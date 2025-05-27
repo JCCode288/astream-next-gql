@@ -27,14 +27,6 @@ export default function Player({
    const getCurrent = historyStore().getCurrent;
 
    useEffect(() => {
-      console.log({
-         streamDiv: streamDiv.current,
-         currentSource,
-         animeId,
-         epsId,
-         subs: currentSubs?.url,
-      });
-
       if (!streamDiv.current || !currentSource || !animeId || !epsId)
          return;
 
