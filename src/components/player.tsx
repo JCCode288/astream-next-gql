@@ -27,8 +27,7 @@ export default function Player({
    const getCurrent = historyStore().getCurrent;
 
    useEffect(() => {
-      if (!streamDiv.current || !currentSource || !animeId || !epsId)
-         return;
+      if (!currentSource || !animeId || !epsId) return;
 
       const hls = hlsBuilder(animeId, epsId);
       if (!hls) return;
@@ -44,7 +43,7 @@ export default function Player({
          outro,
       });
 
-      Artplayer.MOBILE_CLICK_PLAY = true;
+      Artplayer.MOBILE_DBCLICK_PLAY = true;
       const artPlayer = new Artplayer(config);
       const current = getCurrent(animeId, epsId);
 
@@ -68,8 +67,7 @@ export default function Player({
       });
 
       artPlayer.on("ready", () => {
-         if (streamDiv.current)
-            streamDiv.current.scrollTo({ behavior: "smooth" });
+         streamDiv.current?.scrollTo({ behavior: "smooth" });
       });
 
       return () => {
@@ -80,14 +78,7 @@ export default function Player({
          hls.detachMedia();
          hls.destroy();
       };
-   }, [
-      currentSource,
-      qualities,
-      currentSubs,
-      animeId,
-      epsId,
-      streamDiv.current,
-   ]);
+   }, [currentSource, qualities, currentSubs, animeId, epsId]);
 
    return (
       <div

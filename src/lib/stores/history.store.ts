@@ -70,6 +70,8 @@ const historyStore = create<IHistoryStore>()(
 
                eps.timestamp = currentWatch.timestamp;
                eps.duration = currentWatch.duration;
+               eps.started = isStarted;
+               eps.finished = isFinished;
             }
 
             // case updated
