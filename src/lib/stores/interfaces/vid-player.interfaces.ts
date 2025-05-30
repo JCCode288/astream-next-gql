@@ -15,7 +15,7 @@ export interface IGenerateOpts {
    referer?: string;
    qualities: IVideoQuality[];
    currentSubs?: string;
-   div?: HTMLDivElement;
+   div: HTMLDivElement | null;
    intro?: Intro;
    outro?: Intro;
    controls?: ComponentOption[];
