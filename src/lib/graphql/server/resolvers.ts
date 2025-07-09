@@ -12,6 +12,7 @@ import {
 } from "./interfaces/context.interface";
 import { IAnimeResult, ISearch } from "@consumet/extensions";
 import APIProvider from "@/lib/api/provider";
+import GogoProvider from "@/lib/anime-provider/gogo.provider";
 
 export type MainPagination = { page?: number } & IZoroPagination;
 
@@ -20,6 +21,7 @@ export type ICommentVariable = { epsId: string };
 const providers = {
    [ProviderEnum.ANIDRV]: new AniDriveProvider(),
    [ProviderEnum.ZORO]: new ZoroProvider(),
+   [ProviderEnum.GOGO]: new GogoProvider(),
 };
 
 const apiProvider = new APIProvider();
@@ -40,7 +42,9 @@ const resolvers = {
 
             if (!page) throw new Error("invalid pagination");
 
-            const data = await aniProvider.getMainPage(page);
+            const data = await aniProvider.getMainPage(
+               page as IZoroPagination
+            );
 
             return data;
          } catch (err) {

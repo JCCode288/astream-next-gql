@@ -28,6 +28,7 @@ export interface ProviderStrategy<
 export enum ProviderEnum {
    ZORO = "zoro",
    ANIDRV = "anidrive",
+   GOGO = "gogoanime",
 }
 
 export interface IPagination {
