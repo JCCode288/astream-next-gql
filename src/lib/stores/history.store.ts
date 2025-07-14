@@ -76,6 +76,9 @@ const historyStore = create<IHistoryStore>()(
 
             // case updated
             if (anidex >= 0 && epsFlag) {
+               const ani = watchlist.splice(anidex, 1)[0];
+               watchlist.unshift(ani);
+
                set((state) => ({ ...state, watch_list: watchlist }));
                return;
             }
@@ -91,6 +94,9 @@ const historyStore = create<IHistoryStore>()(
                   started: isStarted,
                   finished: isFinished,
                };
+
+               const ani = watchlist.splice(anidex, 1)[0];
+               watchlist.unshift(ani);
 
                set((state) => ({ ...state, watch_list: watchlist }));
                return;
@@ -115,7 +121,7 @@ const historyStore = create<IHistoryStore>()(
                },
             };
 
-            watchlist.push(watchdata);
+            watchlist.unshift(watchdata);
 
             set((state) => ({ ...state, watch_list: watchlist }));
          },
